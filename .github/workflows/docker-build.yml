@@ -1,3 +1,19 @@
+name: Docker Build Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Docker Compose config
+        run: docker compose config
+
   build-rawnet-service:
     runs-on: ubuntu-latest
 
@@ -48,3 +64,26 @@
 
           cat /tmp/rawnet_predict.json
           test "$status" = "503"
+
+  build-distilbert-service:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build DistilBERT Docker image
+        run: docker build -t trust-call-distilbert:ci-test ./distilbert-service
+
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image if Dockerfile exists
+        run: |
+          if [ -f trust_call_backend/Dockerfile ]; then
+            docker build -f trust_call_backend/Dockerfile -t trust-call-backend:ci-test .
+          else
+            echo "No backend Dockerfile found; skipping backend image build."
+          fi
