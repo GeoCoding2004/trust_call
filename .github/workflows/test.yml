@@ -7,32 +7,92 @@ on:
 jobs:
   backend-unit-tests:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+
       - name: Install lightweight dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-asyncio httpx fastapi pydantic numpy
+          python -m pip install pytest pytest-asyncio httpx fastapi pydantic numpy pyyaml
+
+      - name: Validate source formatting and line endings
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          critical = [
+              ".github/workflows/test.yml",
+              ".github/workflows/docker-build.yml",
+              "trust_call_backend/service_clients.py",
+              "trust_call_backend/schemas.py",
+              "trust_call_backend/metrics_registry.py",
+              "tests/test_backend_timeouts.py",
+              "tests/test_identity_flow.py",
+              "tests/test_backend_schemas.py",
+              "README.md",
+              "readme_correction.md",
+          ]
+
+          for p in critical:
+              path = Path(p)
+              if not path.exists():
+                  raise SystemExit(f"Missing critical file: {p}")
+
+              data = path.read_bytes()
+              text = data.decode("utf-8")
+
+              if b"\r" in data:
+                  raise SystemExit(f"{p} contains CR characters; use LF line endings")
+
+              line_count = text.count("\n") + 1
+              if line_count < 5:
+                  raise SystemExit(f"{p} appears collapsed: only {line_count} line(s)")
+
+              print(f"{p}: {line_count} lines, LF OK")
+          PY
+
+      - name: Compile Python source files
+        run: python -m compileall trust_call_backend tests scripts rawnet-service distilbert-service
+
+      - name: Validate workflow YAML
+        run: |
+          python - <<'PY'
+          import yaml
+
+          for p in [".github/workflows/test.yml", ".github/workflows/docker-build.yml"]:
+              with open(p, "r", encoding="utf-8") as f:
+                  yaml.safe_load(f)
+              print("YAML OK:", p)
+          PY
+
       - name: Run backend/unit test subset
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest -q tests -m "not requires_models and not integration"
 
   distilbert-tests:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+
       - name: Install distilbert dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r distilbert-service/requirements.txt pytest
+
       - name: Run distilbert tests in heuristic mode
         working-directory: distilbert-service
         env:
           DISTILBERT_MODEL_NAME: distilbert-base-uncased
-          DISTILBERT_USE_CLASSIFIER: 'false'
+          DISTILBERT_USE_CLASSIFIER: "false"
         run: pytest -q test_main.py
