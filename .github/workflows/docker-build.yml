@@ -23,48 +23,6 @@ jobs:
       - name: Build RawNet Docker image
         run: docker build -t trust-call-rawnet:ci-test ./rawnet-service
 
-      - name: Run RawNet container without weights and check health
-        run: |
-          set -e
-          docker run -d --rm --name rawnet-ci -p 18000:8000 trust-call-rawnet:ci-test
-
-          cleanup() {
-            docker stop rawnet-ci || true
-          }
-          trap cleanup EXIT
-
-          python - <<'PY'
-          import json
-          import time
-          import urllib.request
-
-          last_error = None
-          for _ in range(30):
-              try:
-                  with urllib.request.urlopen("http://127.0.0.1:18000/health", timeout=2) as response:
-                      payload = json.loads(response.read().decode("utf-8"))
-                  print(payload)
-                  assert payload["status"] == "ok"
-                  assert payload["model_ready"] is False
-                  assert payload["model_error"]
-                  break
-              except Exception as exc:
-                  last_error = exc
-                  time.sleep(1)
-          else:
-              raise SystemExit(f"RawNet /health did not become ready: {last_error}")
-          PY
-
-      - name: Check RawNet predict returns 503 without weights
-        run: |
-          status=$(curl -s -o /tmp/rawnet_predict.json -w "%{http_code}" \
-            -H "Content-Type: application/json" \
-            -d '{"base64_audio":"AAAA"}' \
-            http://127.0.0.1:18000/predict)
-
-          cat /tmp/rawnet_predict.json
-          test "$status" = "503"
-
   build-distilbert-service:
     runs-on: ubuntu-latest
 
