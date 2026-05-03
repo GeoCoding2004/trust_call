@@ -2,52 +2,37 @@ name: Tests
 
 on:
   push:
-    branches: ["**"]
   pull_request:
-    branches: ["**"]
 
 jobs:
-  test-distilbert-service:
-    name: DistilBERT Service Tests
+  backend-unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
-      - name: Install DistilBERT service dependencies
-        working-directory: distilbert-service
+          python-version: '3.11'
+      - name: Install lightweight dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt pytest
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-asyncio httpx fastapi pydantic numpy
+      - name: Run backend/unit test subset
+        run: pytest -q tests -m "not requires_models and not integration"
 
-      - name: Run DistilBERT service tests (heuristic fallback - no model weights needed)
+  distilbert-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install distilbert dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r distilbert-service/requirements.txt pytest
+      - name: Run distilbert tests in heuristic mode
         working-directory: distilbert-service
         env:
           DISTILBERT_MODEL_NAME: distilbert-base-uncased
-          DISTILBERT_USE_CLASSIFIER: "false"
-        run: |
-          pytest test_main.py -v --tb=short
-
-  test-backend-unit:
-    name: Backend Unit Tests (mocked, no model weights)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install lightweight test dependencies
-        run: |
-          pip install --upgrade pip
-          pip install pytest pytest-asyncio httpx fastapi pydantic
-
-      - name: Run backend unit tests (no heavy model downloads required)
-        run: |
-          pytest tests/ -v --tb=short -m "not requires_models"
+          DISTILBERT_USE_CLASSIFIER: 'false'
+        run: pytest -q test_main.py

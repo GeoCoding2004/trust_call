@@ -5,6 +5,9 @@ services:
     container_name: trust_call_rawnet
     ports:
       - "8000:8000"
+    environment:
+      # For real inference, provide/mount model weights at this path.
+      RAWNET_MODEL_PATH: /models/fine_tuned_DF_model.pth
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/metrics', timeout=5)"]
       interval: 30s

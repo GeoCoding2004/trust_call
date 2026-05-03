@@ -10,7 +10,9 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip \
     && pip install --no-cache-dir --default-timeout=120 --retries=5 -r requirements.txt
 
-COPY main.py model.py fine_tuned_DF_model.pth ./
+COPY main.py model.py ./
+RUN mkdir -p /models
+ENV RAWNET_MODEL_PATH=/models/fine_tuned_DF_model.pth
 
 EXPOSE 8000
 

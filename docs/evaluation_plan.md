@@ -145,3 +145,6 @@ Run the full pipeline on a labeled set of recorded calls and compare `fusion_sta
 - The heuristic fallback in IEP2 will produce weaker metrics than the neural model; report them separately.
 - For IEP3, report results on both enrolled and TOFU-candidate speakers.
 - Confusion matrices from `rawnet-service/` are from training/validation; label them clearly as such.
+
+
+Note: RawNet evaluation/inference requires supplying model weights via `RAWNET_MODEL_PATH`; CI images intentionally omit `.pth` files.

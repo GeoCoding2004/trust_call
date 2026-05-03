@@ -1,5 +1,24 @@
 # Trust-Call
 
+## For Grading
+
+The main grading map is:
+- `readme_correction.md`
+
+Supporting evidence documents:
+- `docs/demo_evidence/README.md`
+- `docs/production_hardening.md`
+- `docs/evaluation_plan.md`
+- `docs/evaluation_results_template.md`
+- `docs/observability.md`
+
+CI and QA evidence:
+- `.github/workflows/test.yml`
+- `.github/workflows/docker-build.yml`
+- `tests/`
+
+`readme_correction.md` maps every rubric component to the exact file, test, deployment config, or monitoring artifact where it can be verified.
+
 Trust-Call is a real-time, multimodal AI defense system for VoIP-style calls. It analyzes live audio with three internal AI auditors and combines their outputs through a late-fusion decision engine.
 
 Current `dev` includes the full demo pipeline:
@@ -418,4 +437,4 @@ The evaluator generates trial scores, summary metrics, and threshold recommendat
 - IEP3 profile vectors are stored in the backend local state directory for the demo.
 - Live IEP2 requires `faster-whisper` to be installed in the backend environment.
 - `start_services.ps1` may need path cleanup before it is reliable across machines.
-- Production deployment still needs real auth, encrypted profile storage, secret management, hosted service configuration, CI/CD, and monitoring hardening.
+- CI exists, but production deployment still needs stronger security hardening and real benchmark evidence.

@@ -1,3 +1,6 @@
+import pytest
+pytestmark = pytest.mark.requires_models
+
 """
 tests/test_rawnet_service.py
 

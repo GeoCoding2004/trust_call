@@ -4,6 +4,8 @@
 
 ---
 
+Final submission checklist: `docs/final_submission_checklist.md`
+
 ## Project Overview
 
 Trust-Call is a production-oriented, real-time AI application for scam and fraud call detection.
@@ -64,6 +66,7 @@ The project is an **Application** project, not a pure research project. Every AI
 | `docs/evaluation_plan.md` | **New** – evaluation methodology per component |
 | `docs/evaluation_results_template.md` | **New** – fillable results template |
 | `docs/observability.md` | **New** – Prometheus metrics reference and Grafana guide |
+| `docs/final_submission_checklist.md` | **New** – final pre-submission verification checklist |
 | `.env.example` | **New** – environment variable reference |
 | `.github/workflows/test.yml` | **New** – CI: pytest on push/PR |
 | `.github/workflows/docker-build.yml` | **New** – CI: Docker build validation on push/PR |
@@ -166,10 +169,10 @@ Production-oriented AI components:
 3. **Authentication:** Public endpoints are currently unauthenticated (demo mode). Production would require API keys or OAuth. See `docs/production_hardening.md`.
 4. **Secrets management:** No secret manager is integrated. Credentials are environment variables. `.env.example` documents them.
 5. **Semantic model fallback:** If `./custom_scam_model` weights are missing in the DistilBERT container, the service falls back to the heuristic regex scorer. The heuristic still returns valid predictions.
-6. **RawNet model weights:** `fine_tuned_DF_model.pth` must be present in `rawnet-service/` at build time. Without it the container will not start inference.
+6. **RawNet model weights:** Docker image builds without committed `.pth` files. Real inference requires providing `RAWNET_MODEL_PATH` at runtime; without weights, `/health` reports `model_ready=false` and `/predict` returns `503`.
 7. **IEP3 profile storage:** Speaker profiles are stored in the backend's local filesystem, not encrypted on-device. This is a demo-only configuration.
 8. **Whisper dependency:** Live IEP2 semantic scoring requires `faster-whisper` in the backend environment. Without it, transcription is skipped but the backend still runs.
-9. **CORS:** Currently `allow_origins=["*"]`. Production should restrict to known mobile app origins.
+9. **CORS:** `CORS_ORIGINS=*` is a demo default. Production should restrict to the frontend origin only.
 10. **Rate limiting and request size limits:** Not yet enforced. Documented as P0/P1 items in `docs/production_hardening.md`.
 
 ---

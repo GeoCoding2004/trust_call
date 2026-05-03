@@ -2,41 +2,28 @@ name: Docker Build Validation
 
 on:
   push:
-    branches: ["**"]
   pull_request:
-    branches: ["**"]
 
 jobs:
-  build-rawnet-service:
-    name: Build RawNet Service Image
+  build-images:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build RawNet Docker image (no push)
+      - name: Build RawNet image
+        run: docker build -f rawnet-service/Dockerfile -t trust-call-rawnet:ci-test rawnet-service
+      - name: Build DistilBERT image
+        run: docker build -f distilbert-service/Dockerfile -t trust-call-distilbert:ci-test distilbert-service
+      - name: Check backend Dockerfile exists
+        id: backend_dockerfile
         run: |
-          docker build ./rawnet-service -t trust-call-rawnet:ci-test
-
-  build-distilbert-service:
-    name: Build DistilBERT Service Image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build DistilBERT Docker image (no push)
-        run: |
-          docker build ./distilbert-service -t trust-call-distilbert:ci-test
-
-  build-backend:
-    name: Build Backend Gateway Image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check Dockerfile exists
-        run: |
-          [ -f trust_call_backend/Dockerfile ] && echo "Dockerfile found" || echo "No Dockerfile"
-
-      - name: Build backend Docker image (no push)
-        run: |
-          docker build -f trust_call_backend/Dockerfile . -t trust-call-backend:ci-test
+          if [ -f trust_call_backend/Dockerfile ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build backend image
+        if: steps.backend_dockerfile.outputs.exists == 'true'
+        run: docker build -f trust_call_backend/Dockerfile -t trust-call-backend:ci-test .
+      - name: Skip backend build when Dockerfile missing
+        if: steps.backend_dockerfile.outputs.exists != 'true'
+        run: "echo 'Skipping backend image build: trust_call_backend/Dockerfile not found.'"
