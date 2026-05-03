@@ -154,7 +154,7 @@ const requestContactsPermission = async () => {
     const granted = await requestAndroidPermission(
       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
       'Trust Call Contacts Permission',
-      'Trust Call uses contacts so you can choose whose voice profile to verify.',
+      'Trust Call uses contacts to match incoming numbers to trusted callers.',
     );
 
     if (!granted) {
@@ -171,12 +171,11 @@ const requestContactsPermission = async () => {
 };
 
 const formatStatusDetail = (status?: EnrollmentStatus) => {
-  if (!status) return 'Checking enrollment';
-  if (!status.enrolled) return 'No voice profile yet';
+  if (!status) return 'Checking protection';
+  if (!status.enrolled) return 'Voice profile not saved yet';
 
   const updates = status.num_updates ?? 0;
-  const dimensions = status.embedding_dim ? `${status.embedding_dim}D` : 'embedding';
-  return `${dimensions} profile, ${updates} updates`;
+  return updates > 0 ? 'Protected voice profile ready' : 'Voice profile ready';
 };
 
 const HomeScreen = ({ navigation }: any) => {
@@ -186,13 +185,15 @@ const HomeScreen = ({ navigation }: any) => {
     Record<string, EnrollmentStatus | undefined>
   >({});
   const [backendStatus, setBackendStatus] = useState('Checking backend');
-  const [contactsStatus, setContactsStatus] = useState('Demo contacts loaded');
+  const [, setContactsStatus] = useState('Demo contacts loaded');
   const [searchText, setSearchText] = useState('');
   const [incomingPhoneNumber, setIncomingPhoneNumber] = useState('+1 555 0101');
+  const [contactsExpanded, setContactsExpanded] = useState(false);
 
   const selectedContact =
     contacts.find((contact) => contact.callerId === selectedCallerId) ?? contacts[0];
 
+  const visibleContactsLimit = contactsExpanded || searchText.trim() ? 50 : 3;
   const visibleContacts = contacts.filter((contact) => {
     const query = searchText.trim().toLowerCase();
     if (!query) return true;
@@ -200,7 +201,7 @@ const HomeScreen = ({ navigation }: any) => {
       contact.callerName.toLowerCase().includes(query) ||
       contact.label.toLowerCase().includes(query)
     );
-  });
+  }).slice(0, visibleContactsLimit);
 
   const resolveIncomingContact = (phoneNumber: string): TrustedContact | undefined =>
     contacts.find((contact) => phoneNumbersMatch(contact.phoneNumber ?? contact.label, phoneNumber));
@@ -278,6 +279,8 @@ const HomeScreen = ({ navigation }: any) => {
     const unsubscribe = navigation.addListener('focus', loadPhoneContacts);
     loadPhoneContacts();
     return unsubscribe;
+    // loadPhoneContacts is intentionally re-created from current screen state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   const startSelectedContactCall = async () => {
@@ -334,27 +337,29 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.hero}>
+          <Text style={styles.appName}>Trust-Call</Text>
+          <Text style={styles.heroSubtitle}>Live AI protection for suspicious calls</Text>
+        </View>
+
         <View style={styles.statusCard}>
-          <Text style={styles.statusTitle}>System Status</Text>
-          <Text
-            style={[
-              styles.statusActive,
-              backendStatus === 'Backend offline' && styles.statusOffline,
-            ]}>
-            {backendStatus}
-          </Text>
-          <Text style={styles.statusText}>{contactsStatus}</Text>
-          <Text style={styles.statusText}>Local speaker profiles: encrypted JSON store</Text>
+          <View>
+            <Text style={styles.statusTitle}>Protection Status</Text>
+            <Text
+              style={[
+                styles.statusActive,
+                backendStatus === 'Backend offline' && styles.statusOffline,
+              ]}>
+              {backendStatus}
+            </Text>
+          </View>
+          <View style={styles.statusDot} />
         </View>
 
         <View style={styles.incomingPanel}>
-          <Text style={styles.selectedEyebrow}>Incoming Call Resolution</Text>
-          <Text style={styles.incomingHelp}>
-            Enter a caller number. Trust-Call normalizes it, matches phone contacts, and
-            uses the resolved contact ID for 1:1 IEP3 verification or TOFU enrollment.
-          </Text>
+          <Text style={styles.selectedEyebrow}>Check a Call</Text>
           <TextInput
-            style={styles.searchInput}
+            style={styles.numberInput}
             placeholder="Incoming phone number"
             placeholderTextColor="#777"
             keyboardType="phone-pad"
@@ -362,72 +367,97 @@ const HomeScreen = ({ navigation }: any) => {
             onChangeText={setIncomingPhoneNumber}
           />
           <TouchableOpacity style={styles.primaryButton} onPress={startIncomingPhoneCall}>
-            <Text style={styles.primaryButtonText}>Simulate Incoming Number</Text>
+            <Text style={styles.primaryButtonText}>Check Incoming Call</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Trusted Contacts</Text>
-          <TouchableOpacity style={styles.refreshButton} onPress={loadPhoneContacts}>
-            <Text style={styles.refreshButtonText}>Refresh</Text>
+        <View style={styles.quickActions}>
+          <TouchableOpacity style={styles.quickAction} onPress={startSelectedContactCall}>
+            <Text style={styles.quickActionLabel}>Selected Contact</Text>
+            <Text style={styles.quickActionTitle}>{selectedContact?.callerName ?? 'Contact'}</Text>
           </TouchableOpacity>
-        </View>
-
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search contacts"
-          placeholderTextColor="#777"
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-
-        <View style={styles.contactList}>
-          {visibleContacts.map((contact) => {
-            const status = enrollmentByCallerId[contact.callerId];
-            const isSelected = contact.callerId === selectedContact?.callerId;
-            const isEnrolled = status?.enrolled === true;
-
-            return (
-              <TouchableOpacity
-                key={`${contact.callerId}-${contact.label}`}
-                style={[styles.contactCard, isSelected && styles.contactCardSelected]}
-                onPress={() => setSelectedCallerId(contact.callerId)}>
-                <View style={styles.contactTextBlock}>
-                  <Text style={styles.contactName}>{contact.callerName}</Text>
-                  <Text style={styles.contactLabel}>{contact.label}</Text>
-                  <Text style={styles.contactMeta}>{formatStatusDetail(status)}</Text>
-                </View>
-                <View
-                  style={[
-                    styles.enrollmentPill,
-                    isEnrolled ? styles.enrollmentPillReady : styles.enrollmentPillMissing,
-                  ]}>
-                  <Text style={styles.enrollmentPillText}>
-                    {isEnrolled ? 'Enrolled' : 'Missing'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+          <TouchableOpacity style={styles.quickAction} onPress={startUnknownCallerCall}>
+            <Text style={styles.quickActionLabel}>Demo Test</Text>
+            <Text style={styles.quickActionTitle}>Unknown Caller</Text>
+          </TouchableOpacity>
         </View>
 
         {selectedContact ? (
           <View style={styles.selectedPanel}>
-            <Text style={styles.selectedEyebrow}>Selected Caller</Text>
+            <Text style={styles.selectedEyebrow}>Selected Contact</Text>
             <Text style={styles.selectedName}>{selectedContact.callerName}</Text>
             <Text style={styles.selectedStatus}>{formatStatusDetail(selectedStatus)}</Text>
-            <Text style={styles.selectedCallerId}>{selectedContact.callerId}</Text>
           </View>
         ) : null}
 
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.primaryButton} onPress={startSelectedContactCall}>
-            <Text style={styles.primaryButtonText}>Simulate Selected Contact</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton} onPress={startUnknownCallerCall}>
-            <Text style={styles.secondaryButtonText}>Simulate Unknown Caller</Text>
+        <View style={styles.sectionHeader}>
+          <TouchableOpacity
+            style={styles.contactsToggle}
+            onPress={() => setContactsExpanded((current) => !current)}>
+            <View>
+              <Text style={styles.sectionTitle}>Contacts</Text>
+              <Text style={styles.sectionSubtitle}>
+                {contactsExpanded ? 'Tap to collapse' : 'Tap to choose another caller'}
+              </Text>
+            </View>
+            <Text style={styles.expandIcon}>{contactsExpanded ? '−' : '+'}</Text>
           </TouchableOpacity>
         </View>
+
+        {contactsExpanded ? (
+          <>
+            <View style={styles.contactsToolbar}>
+              <TextInput
+                style={[styles.searchInput, styles.contactsSearchInput]}
+                placeholder="Search contacts"
+                placeholderTextColor="#777"
+                value={searchText}
+                onChangeText={setSearchText}
+              />
+              <TouchableOpacity style={styles.refreshButton} onPress={loadPhoneContacts}>
+                <Text style={styles.refreshButtonText}>Refresh</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.contactList}>
+              {visibleContacts.map((contact, index) => {
+                const status = enrollmentByCallerId[contact.callerId];
+                const isSelected = contact.callerId === selectedContact?.callerId;
+                const isEnrolled = status?.enrolled === true;
+
+                return (
+                  <TouchableOpacity
+                    key={`${contact.callerId}-${contact.label}-${index}`}
+                    style={[styles.contactCard, isSelected && styles.contactCardSelected]}
+                    onPress={() => {
+                      setSelectedCallerId(contact.callerId);
+                      setContactsExpanded(false);
+                      setSearchText('');
+                    }}>
+                    <View style={styles.contactTextBlock}>
+                      <Text style={styles.contactName}>{contact.callerName}</Text>
+                      <Text style={styles.contactLabel}>{contact.label}</Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.enrollmentPill,
+                        isEnrolled ? styles.enrollmentPillReady : styles.enrollmentPillMissing,
+                      ]}>
+                      <Text style={styles.enrollmentPillText}>
+                        {isEnrolled ? 'Protected' : 'New'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            {contacts.length > visibleContacts.length ? (
+              <Text style={styles.contactHint}>
+                Showing {visibleContacts.length} of {contacts.length}. Search to find another contact.
+              </Text>
+            ) : null}
+          </>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -436,106 +466,186 @@ const HomeScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#090D0C',
   },
   content: {
-    padding: 20,
-    paddingBottom: 32,
+    padding: 16,
+    paddingBottom: 28,
+  },
+  hero: {
+    marginTop: 10,
+    marginBottom: 12,
+  },
+  appName: {
+    color: '#F7F5EE',
+    fontSize: 34,
+    fontWeight: '900',
+    letterSpacing: -1,
+  },
+  heroSubtitle: {
+    color: '#9AA7A1',
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 4,
   },
   statusCard: {
-    backgroundColor: '#1E1E1E',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
+    alignItems: 'center',
+    backgroundColor: '#151B19',
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#26322E',
+    borderRadius: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
   },
   statusTitle: {
-    color: '#888',
-    fontSize: 14,
-    textTransform: 'uppercase',
+    color: '#89968F',
+    fontSize: 11,
+    fontWeight: '900',
     letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   statusActive: {
-    color: '#4CAF50',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
+    color: '#58C879',
+    fontSize: 18,
+    fontWeight: '900',
+    marginTop: 4,
     textTransform: 'capitalize',
   },
   statusOffline: {
     color: '#FF3B30',
   },
-  statusText: {
-    color: '#CCC',
-    fontSize: 14,
-    marginTop: 5,
+  statusDot: {
+    backgroundColor: '#58C879',
+    borderRadius: 8,
+    height: 16,
+    width: 16,
   },
   incomingPanel: {
-    backgroundColor: '#181F18',
-    borderColor: '#2E7D32',
-    borderRadius: 12,
+    backgroundColor: '#102119',
+    borderColor: '#2E9D5B',
+    borderRadius: 22,
     borderWidth: 1,
-    marginTop: 20,
-    padding: 18,
-    gap: 12,
+    gap: 10,
+    marginTop: 14,
+    padding: 16,
   },
-  incomingHelp: {
-    color: '#CFCFCF',
-    fontSize: 13,
-    lineHeight: 19,
+  numberInput: {
+    backgroundColor: '#151716',
+    borderColor: '#303B37',
+    borderRadius: 14,
+    borderWidth: 1,
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '900',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  quickActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  quickAction: {
+    backgroundColor: '#151B19',
+    borderColor: '#26322E',
+    borderRadius: 18,
+    borderWidth: 1,
+    flex: 1,
+    padding: 14,
+  },
+  quickActionLabel: {
+    color: '#7F8D86',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.9,
+    textTransform: 'uppercase',
+  },
+  quickActionTitle: {
+    color: '#F1F5F2',
+    fontSize: 15,
+    fontWeight: '900',
+    marginTop: 6,
   },
   sectionHeader: {
+    marginBottom: 8,
+    marginTop: 18,
+  },
+  contactsToggle: {
+    alignItems: 'center',
+    backgroundColor: '#151B19',
+    borderColor: '#26322E',
+    borderRadius: 18,
+    borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 28,
-    marginBottom: 12,
+    padding: 14,
   },
   sectionTitle: {
     color: '#F5F5F5',
-    fontSize: 22,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  sectionSubtitle: {
+    color: '#7F8D86',
+    fontSize: 12,
     fontWeight: '700',
+    marginTop: 3,
+  },
+  expandIcon: {
+    color: '#F5F5F5',
+    fontSize: 28,
+    fontWeight: '700',
+  },
+  contactsToolbar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 10,
   },
   refreshButton: {
     borderWidth: 1,
-    borderColor: '#3A3A3A',
-    borderRadius: 8,
+    borderColor: '#2B3531',
+    borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 7,
   },
   refreshButtonText: {
     color: '#CFCFCF',
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '800',
   },
   searchInput: {
-    backgroundColor: '#1A1A1A',
-    borderColor: '#333',
-    borderRadius: 10,
+    backgroundColor: '#151716',
+    borderColor: '#303B37',
+    borderRadius: 14,
     borderWidth: 1,
     color: '#FFFFFF',
-    fontSize: 16,
-    marginBottom: 12,
+    fontSize: 15,
+    marginBottom: 10,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
+  },
+  contactsSearchInput: {
+    flex: 1,
+    marginBottom: 0,
   },
   contactList: {
-    gap: 10,
+    gap: 8,
   },
   contactCard: {
-    backgroundColor: '#1A1A1A',
-    borderColor: '#2F2F2F',
-    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#151716',
+    borderColor: '#2B3531',
+    borderRadius: 16,
     borderWidth: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: 13,
   },
   contactCardSelected: {
-    borderColor: '#4CAF50',
-    backgroundColor: '#172017',
+    backgroundColor: '#112018',
+    borderColor: '#45B765',
   },
   contactTextBlock: {
     flex: 1,
@@ -543,23 +653,18 @@ const styles = StyleSheet.create({
   },
   contactName: {
     color: '#F2F2F2',
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 17,
+    fontWeight: '900',
   },
   contactLabel: {
     color: '#9F9F9F',
-    fontSize: 13,
-    marginTop: 4,
-  },
-  contactMeta: {
-    color: '#C9C9C9',
     fontSize: 12,
-    marginTop: 8,
+    marginTop: 3,
   },
   enrollmentPill: {
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
   },
   enrollmentPillReady: {
     backgroundColor: '#2E7D32',
@@ -574,63 +679,47 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   selectedPanel: {
-    backgroundColor: '#202020',
-    borderColor: '#3A3A3A',
-    borderRadius: 10,
+    backgroundColor: '#151B19',
+    borderColor: '#26322E',
+    borderRadius: 18,
     borderWidth: 1,
-    marginTop: 20,
-    padding: 18,
+    marginTop: 12,
+    padding: 14,
   },
   selectedEyebrow: {
-    color: '#888',
-    fontSize: 12,
-    fontWeight: '700',
+    color: '#88958F',
+    fontSize: 11,
+    fontWeight: '900',
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   selectedName: {
     color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '800',
-    marginTop: 8,
+    fontSize: 20,
+    fontWeight: '900',
+    marginTop: 6,
   },
   selectedStatus: {
     color: '#CFCFCF',
-    fontSize: 14,
-    marginTop: 6,
-  },
-  selectedCallerId: {
-    color: '#777',
-    fontSize: 12,
-    marginTop: 8,
-  },
-  actions: {
-    marginTop: 24,
-    gap: 12,
+    fontSize: 13,
+    marginTop: 4,
   },
   primaryButton: {
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    paddingVertical: 15,
+    backgroundColor: '#45B765',
+    borderRadius: 15,
+    paddingVertical: 14,
   },
   primaryButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 15,
+    fontWeight: '900',
   },
-  secondaryButton: {
-    alignItems: 'center',
-    backgroundColor: '#252525',
-    borderColor: '#444',
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingVertical: 15,
-  },
-  secondaryButtonText: {
-    color: '#E8E8E8',
-    fontSize: 16,
-    fontWeight: '700',
+  contactHint: {
+    color: '#7B8781',
+    fontSize: 12,
+    marginTop: 10,
+    textAlign: 'center',
   },
 });
 
