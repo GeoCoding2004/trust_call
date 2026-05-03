@@ -18,7 +18,7 @@ jobs:
       - name: Install lightweight dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-asyncio httpx fastapi pydantic numpy pyyaml
+          python -m pip install pytest pytest-asyncio httpx fastapi pydantic numpy prometheus-client pyyaml
 
       - name: Validate source formatting and line endings
         run: |
@@ -31,6 +31,7 @@ jobs:
               "trust_call_backend/service_clients.py",
               "trust_call_backend/schemas.py",
               "trust_call_backend/metrics_registry.py",
+              "trust_call_backend/observability_metrics.py",
               "tests/test_backend_timeouts.py",
               "tests/test_identity_flow.py",
               "tests/test_backend_schemas.py",

@@ -6,4 +6,5 @@ numpy
 torch==2.5.1+cpu
 torchaudio==2.5.1+cpu
 soundfile==0.13.1
+prometheus-client
 prometheus-fastapi-instrumentator

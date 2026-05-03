@@ -9,6 +9,7 @@ def test_backend_safe_modules_import():
         "trust_call_backend.schemas",
         "trust_call_backend.service_clients",
         "trust_call_backend.metrics_registry",
+        "trust_call_backend.observability_metrics",
     ]:
         module = importlib.import_module(module_name)
         assert module is not None

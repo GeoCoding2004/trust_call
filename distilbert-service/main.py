@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Any, List, Optional, Tuple
@@ -9,6 +10,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from prometheus_client import Counter, Gauge, Histogram
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
@@ -62,6 +64,66 @@ PHRASE_WEIGHTS = {
     "confirm identity": 0.14,
 }
 
+SEMANTIC_SCORE_BUCKETS = (0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+TEXT_LENGTH_BUCKETS = (0, 5, 10, 20, 50, 100, 250, 500, 1000, 2000, 5000)
+PHRASE_COUNT_BUCKETS = (0, 1, 2, 3, 5, 8, 13, 21)
+
+trust_call_distilbert_model_ready = Gauge(
+    "trust_call_distilbert_model_ready",
+    "1 if DistilBERT tokenizer and classifier are loaded.",
+)
+trust_call_distilbert_model_mode = Gauge(
+    "trust_call_distilbert_model_mode",
+    "One-hot gauge indicating whether classifier or heuristic mode is active.",
+    labelnames=("mode",),
+)
+trust_call_distilbert_predictions_total = Counter(
+    "trust_call_distilbert_predictions_total",
+    "Semantic predictions by label and mode.",
+    labelnames=("label", "mode"),
+)
+trust_call_distilbert_errors_total = Counter(
+    "trust_call_distilbert_errors_total",
+    "DistilBERT errors by type.",
+    labelnames=("error_type",),
+)
+trust_call_distilbert_fallback_total = Counter(
+    "trust_call_distilbert_fallback_total",
+    "Fallback or heuristic behaviors used by the semantic service.",
+    labelnames=("reason",),
+)
+trust_call_distilbert_inference_latency_seconds = Histogram(
+    "trust_call_distilbert_inference_latency_seconds",
+    "Latency of semantic prediction requests.",
+    buckets=(0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5),
+)
+trust_call_distilbert_semantic_score = Histogram(
+    "trust_call_distilbert_semantic_score",
+    "Distribution of DistilBERT scam-risk scores.",
+    buckets=SEMANTIC_SCORE_BUCKETS,
+)
+trust_call_distilbert_text_length_chars = Histogram(
+    "trust_call_distilbert_text_length_chars",
+    "Length of semantic service text inputs.",
+    buckets=TEXT_LENGTH_BUCKETS,
+)
+trust_call_distilbert_empty_text_total = Counter(
+    "trust_call_distilbert_empty_text_total",
+    "Empty or insufficient semantic inputs.",
+)
+trust_call_distilbert_flagged_keyword_groups_total = Counter(
+    "trust_call_distilbert_flagged_keyword_groups_total",
+    "Counts of flagged keyword groups without exposing raw phrase content.",
+    labelnames=("keyword_group",),
+)
+trust_call_distilbert_flagged_phrase_count = Histogram(
+    "trust_call_distilbert_flagged_phrase_count",
+    "Number of suspicious phrase groups observed in a request.",
+    buckets=PHRASE_COUNT_BUCKETS,
+)
+
+HEURISTIC_FALLBACK_RECORDED = False
+
 
 class TextInput(BaseModel):
     scrubbed_text: str
@@ -84,6 +146,39 @@ class ModelBundle:
 
 
 MODEL_BUNDLE: Optional[ModelBundle] = None
+
+
+def _set_model_mode(mode: str) -> None:
+    trust_call_distilbert_model_mode.labels(mode="classifier").set(1 if mode == "classifier" else 0)
+    trust_call_distilbert_model_mode.labels(mode="heuristic").set(1 if mode == "heuristic" else 0)
+
+
+def classify_flagged_phrase_group(phrase: str) -> str:
+    normalized = phrase.strip().lower()
+    if normalized in {"urgent", "act now", "account locked"}:
+        return "urgency"
+    if normalized in {"send money", "wire transfer"}:
+        return "money"
+    if normalized in {"bank details", "security code", "otp"}:
+        return "credentials"
+    if normalized in {"verify account", "confirm identity"}:
+        return "verification"
+    if normalized in {"do not tell anyone"}:
+        return "authority"
+    if "payment" in normalized:
+        return "payment"
+    return "unknown"
+
+
+def _metrics_label_for_response(label: str) -> str:
+    mapping = {
+        "benign": "safe",
+        "safe": "safe",
+        "suspicious": "suspicious",
+        "scam": "scam",
+        "insufficient_text": "insufficient_text",
+    }
+    return mapping.get(label, "error")
 
 
 def _safe_model_max_length(tokenizer: Any) -> int:
@@ -193,7 +288,19 @@ def compute_semantic_score(text: str, flagged: List[str], bundle: ModelBundle) -
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     global MODEL_BUNDLE
+    global HEURISTIC_FALLBACK_RECORDED
     MODEL_BUNDLE = load_model_bundle()
+    if MODEL_BUNDLE.ready and MODEL_BUNDLE.use_classifier:
+        trust_call_distilbert_model_ready.set(1)
+        _set_model_mode("classifier")
+    else:
+        trust_call_distilbert_model_ready.set(0)
+        _set_model_mode("heuristic")
+        if MODEL_BUNDLE.load_error:
+            trust_call_distilbert_errors_total.labels(error_type="model_load_failed").inc()
+        if not HEURISTIC_FALLBACK_RECORDED:
+            trust_call_distilbert_fallback_total.labels(reason="classifier_not_ready").inc()
+            HEURISTIC_FALLBACK_RECORDED = True
     yield
 
 
@@ -202,6 +309,7 @@ Instrumentator().instrument(app).expose(app)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_: Request, exc: RequestValidationError):
+    trust_call_distilbert_errors_total.labels(error_type="validation_error").inc()
     return JSONResponse(status_code=400, content={"detail": exc.errors()})
 
 
@@ -210,9 +318,17 @@ async def predict_semantic_risk(payload: TextInput):
     if MODEL_BUNDLE is None:
         raise HTTPException(status_code=500, detail="Model bundle not initialized")
 
+    started = time.perf_counter()
     try:
         normalized = normalize_text(payload.scrubbed_text)
+        trust_call_distilbert_text_length_chars.observe(len(normalized))
         if len(normalized) < MIN_TEXT_CHARS:
+            trust_call_distilbert_empty_text_total.inc()
+            trust_call_distilbert_fallback_total.labels(reason="empty_text").inc()
+            trust_call_distilbert_predictions_total.labels(
+                label="insufficient_text",
+                mode="none",
+            ).inc()
             return {
                 "semantic_score": 0.0,
                 "label": "insufficient_text",
@@ -222,6 +338,18 @@ async def predict_semantic_risk(payload: TextInput):
 
         flagged = extract_flagged_phrases(normalized)
         score, label, mode = compute_semantic_score(normalized, flagged, MODEL_BUNDLE)
+        trust_call_distilbert_semantic_score.observe(score)
+        trust_call_distilbert_flagged_phrase_count.observe(len(flagged))
+        if mode == "heuristic":
+            trust_call_distilbert_fallback_total.labels(reason="heuristic_mode").inc()
+        for phrase in flagged:
+            trust_call_distilbert_flagged_keyword_groups_total.labels(
+                keyword_group=classify_flagged_phrase_group(phrase)
+            ).inc()
+        trust_call_distilbert_predictions_total.labels(
+            label=_metrics_label_for_response(label),
+            mode=mode,
+        ).inc()
 
         model_name = MODEL_BUNDLE.model_name
         if mode == "heuristic":
@@ -234,6 +362,11 @@ async def predict_semantic_risk(payload: TextInput):
             "model_name": model_name,
         }
     except ValueError as exc:
+        trust_call_distilbert_errors_total.labels(error_type="validation_error").inc()
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception:
+        trust_call_distilbert_predictions_total.labels(label="error", mode="none").inc()
+        trust_call_distilbert_errors_total.labels(error_type="prediction_failed").inc()
         raise HTTPException(status_code=500, detail="Internal Server Error during semantic analysis")
+    finally:
+        trust_call_distilbert_inference_latency_seconds.observe(time.perf_counter() - started)

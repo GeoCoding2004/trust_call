@@ -3,6 +3,7 @@ import base64
 import io
 import os
 import tempfile
+import time
 from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,16 +18,58 @@ os.environ.setdefault("HF_HUB_CACHE", str(PROJECT_STATE_ROOT / "huggingface" / "
 import numpy as np
 import soundfile as sf
 from aiortc import RTCConfiguration, RTCIceServer, RTCPeerConnection, RTCSessionDescription
-from fastapi import FastAPI, HTTPException, Response, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
 
 try:
-    from trust_call_backend.fusion import build_fusion_status
+    from trust_call_backend.fusion import (
+        build_fusion_status,
+        dominant_signal,
+        normalized_fusion_score,
+    )
 except ModuleNotFoundError:
-    from fusion import build_fusion_status  # type: ignore
+    from fusion import build_fusion_status, dominant_signal, normalized_fusion_score  # type: ignore
 
-from trust_call_backend.metrics_registry import MetricsRegistry, _escape_metric_label
+from trust_call_backend.metrics_registry import MetricsRegistry
+from trust_call_backend.observability_metrics import (
+    clamp_percentage,
+    clamp_unit_interval,
+    render_prometheus_client_metrics,
+    trust_call_audio_decode_failures_total,
+    trust_call_audio_silence_ratio,
+    trust_call_audio_too_short_total,
+    trust_call_gateway_component_missing_total,
+    trust_call_gateway_decision_source_total,
+    trust_call_gateway_degraded_decisions_total,
+    trust_call_gateway_distilbert_downstream_latency_seconds,
+    trust_call_gateway_downstream_timeout_total,
+    trust_call_gateway_end_to_end_decision_latency_seconds,
+    trust_call_gateway_conflict_cases_total,
+    trust_call_gateway_fusion_latency_seconds,
+    trust_call_gateway_fusion_score,
+    trust_call_gateway_invalid_payload_total,
+    trust_call_gateway_oversized_payload_rejected_total,
+    trust_call_gateway_rawnet_downstream_latency_seconds,
+    trust_call_gateway_rawnet_spoof_score_percent,
+    trust_call_gateway_semantic_score,
+    trust_call_gateway_sessions_completed_total,
+    trust_call_gateway_user_alerts_total,
+    trust_call_gateway_websocket_connections_total,
+    trust_call_iep3_identity_latency_seconds,
+    trust_call_iep3_low_quality_voice_total,
+    trust_call_iep3_model_ready,
+    trust_call_iep3_profile_updates_total,
+    trust_call_iep3_similarity_score,
+    trust_call_iep3_suspicious_identity_events_total,
+    trust_call_transcript_empty_total,
+    trust_call_whisper_empty_transcripts_total,
+    trust_call_whisper_model_ready,
+    trust_call_whisper_transcript_length_chars,
+    trust_call_whisper_transcription_latency_seconds,
+    trust_call_whisper_transcription_requests_total,
+)
 from trust_call_backend.schemas import (
     IdentityEnrollmentPayload,
     IdentityIdentificationPayload,
@@ -35,12 +78,10 @@ from trust_call_backend.schemas import (
     LiveSessionEnrollmentPayload,
     Offer,
 )
-from trust_call_backend.service_clients import fetch_distilbert_prediction, fetch_rawnet_prediction
-
-try:
-    from trust_call_backend.fusion import build_fusion_status
-except ModuleNotFoundError:
-    from fusion import build_fusion_status  # type: ignore
+from trust_call_backend.service_clients import (
+    fetch_distilbert_prediction_details,
+    fetch_rawnet_prediction_details,
+)
 
 try:
     from faster_whisper import WhisperModel
@@ -101,50 +142,125 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    route_label = _request_route_label(request)
+    reason = _validation_reason(exc)
+    trust_call_gateway_invalid_payload_total.labels(route=route_label, reason=reason).inc()
+    if reason == "oversized_payload":
+        trust_call_gateway_oversized_payload_rejected_total.labels(route=route_label).inc()
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
+
+
 metrics = MetricsRegistry()
 
-
-class Offer(BaseModel):
-    sdp: str = Field(..., min_length=1, max_length=200_000)
-    type: str = Field(..., min_length=1, max_length=32)
-    caller_id: str = Field(default="unknown", max_length=128)
-
-
-class IdentityEnrollmentPayload(BaseModel):
-    caller_id: str = Field(..., min_length=1, max_length=128)
-    base64_audio: str = Field(..., min_length=1, max_length=12_000_000)
-    allow_update: bool = False
-    ema_alpha: float | None = None
-    safe_to_enroll: bool = False
-    safe_to_update: bool = False
-    synthetic_score: float | None = Field(default=None, ge=0.0, le=1.0)
-    coercion_score: float | None = Field(default=None, ge=0.0, le=1.0)
+ROUTES_WITH_AUDIO_PAYLOADS = {
+    "/identity/enroll",
+    "/identity/verify",
+    "/identity/identify",
+    "/identity/live/validate",
+}
 
 
-class IdentityVerificationPayload(BaseModel):
-    caller_id: str = Field(..., min_length=1, max_length=128)
-    base64_audio: str = Field(..., min_length=1, max_length=12_000_000)
+def _request_route_label(request: Request) -> str:
+    route = request.scope.get("route")
+    path = getattr(route, "path", None)
+    if isinstance(path, str) and path:
+        return path
+    return request.url.path
 
 
-class IdentityIdentificationPayload(BaseModel):
-    base64_audio: str = Field(..., min_length=1, max_length=12_000_000)
-    claimed_caller_id: str = Field(default="unknown", max_length=128)
-    top_k: int = Field(default=3, ge=1, le=10)
+def _validation_reason(exc: RequestValidationError) -> str:
+    details = exc.errors()
+    if not details:
+        return "unknown"
+    error_types = {str(item.get("type", "")) for item in details}
+    if any("too_long" in item or "too_large" in item for item in error_types):
+        return "oversized_payload"
+    if any("missing" in item for item in error_types):
+        return "missing_field"
+    if any("type" in item for item in error_types):
+        return "invalid_type"
+    if any("parsing" in item or "json" in item for item in error_types):
+        return "validation_error"
+    return "validation_error"
 
 
-class LiveIdentityValidationPayload(BaseModel):
-    caller_id: str = Field(..., min_length=1, max_length=128)
-    base64_audio: str = Field(..., min_length=1, max_length=12_000_000)
-    session_id: str | None = Field(default=None, max_length=128)
-    dispatch_signal_auditor: bool = False
-    identify_if_unenrolled: bool = False
-    top_k: int = Field(default=3, ge=1, le=10)
+def _duration_seconds(audio: np.ndarray, sample_rate: int) -> float:
+    if sample_rate <= 0:
+        return 0.0
+    samples = np.asarray(audio)
+    if samples.ndim == 2:
+        length = samples.shape[0]
+    else:
+        length = samples.size
+    return float(length) / float(sample_rate)
 
 
-class LiveSessionEnrollmentPayload(BaseModel):
-    safe_to_enroll: bool = True
-    synthetic_score: float | None = Field(default=None, ge=0.0, le=1.0)
-    coercion_score: float | None = Field(default=None, ge=0.0, le=1.0)
+def _observe_audio_quality(audio: np.ndarray, sample_rate: int) -> dict[str, float | bool | str]:
+    quality = measure_audio_quality(audio)
+    trust_call_audio_silence_ratio.observe(float(1.0 - float(quality["active_ratio"])))
+    if _duration_seconds(audio, sample_rate) < 0.5:
+        trust_call_audio_too_short_total.inc()
+    return quality
+
+
+def _inspect_audio_payload(base64_audio: str, route_label: str) -> tuple[np.ndarray, int] | None:
+    try:
+        audio, sample_rate = decode_base64_audio(base64_audio)
+    except Exception:
+        trust_call_audio_decode_failures_total.labels(route=route_label).inc()
+        return None
+
+    _observe_audio_quality(audio, sample_rate)
+    return audio, sample_rate
+
+
+def _record_identity_result_metrics(identity_result: IdentityResult) -> None:
+    suspicious_statuses = {
+        "mismatch": "mismatch",
+        "unknown_speaker": "unknown_speaker",
+        "profile_incompatible": "profile_incompatible",
+    }
+    quality_statuses = {
+        "insufficient_audio": "insufficient_audio",
+        "low_energy": "low_energy",
+        "candidate_waiting_for_speech": "candidate_waiting_for_speech",
+    }
+    if identity_result.status in suspicious_statuses:
+        trust_call_iep3_suspicious_identity_events_total.labels(
+            reason=suspicious_statuses[identity_result.status]
+        ).inc()
+    if identity_result.status in quality_statuses:
+        trust_call_iep3_low_quality_voice_total.labels(
+            reason=quality_statuses[identity_result.status]
+        ).inc()
+
+    similarity_value = identity_result.match_confidence
+    if similarity_value is None and identity_result.similarity is not None:
+        similarity_value = clamp_unit_interval((float(identity_result.similarity) + 1.0) / 2.0)
+    if similarity_value is not None:
+        trust_call_iep3_similarity_score.observe(clamp_unit_interval(similarity_value))
+
+
+def _identity_unavailable_result(caller_id: str, sample_rate: int, audio: np.ndarray) -> IdentityResult:
+    return IdentityResult(
+        caller_id=caller_id or "unknown",
+        status="model_unavailable",
+        identity_score=0.0,
+        similarity=None,
+        match_confidence=None,
+        display_text="Model Unavailable",
+        reason=identity_init_error or "identity_model_unavailable",
+        enrolled=False,
+        duration_seconds=round(_duration_seconds(audio, sample_rate), 6),
+    )
+
+
+def _require_identity_auditor() -> IdentityAuditor:
+    if identity_auditor is None:
+        raise HTTPException(status_code=503, detail="Identity auditor unavailable")
+    return identity_auditor
 
 
 class ConnectionManager:
@@ -154,10 +270,12 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
+        trust_call_gateway_websocket_connections_total.labels(status="accepted").inc()
 
     def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
             self.active_connections.remove(websocket)
+        trust_call_gateway_websocket_connections_total.labels(status="disconnected").inc()
 
     async def broadcast(self, message: dict):
         if not self.active_connections:
@@ -169,6 +287,7 @@ class ConnectionManager:
                 await connection.send_json(message)
             except Exception as exc:
                 print(f"Failed to send websocket message: {exc}")
+                trust_call_gateway_websocket_connections_total.labels(status="send_error").inc()
 
 
 class LiveIdentityMonitor:
@@ -439,6 +558,7 @@ def _utc_now() -> str:
 def _load_whisper_model():
     if WhisperModel is None:
         print("Whisper unavailable: faster_whisper is not installed.")
+        trust_call_whisper_model_ready.set(0)
         return None
     try:
         print(f"Loading Whisper STT model: {WHISPER_MODEL_NAME}")
@@ -448,9 +568,11 @@ def _load_whisper_model():
             compute_type=WHISPER_COMPUTE_TYPE,
         )
         print("Whisper loaded.")
+        trust_call_whisper_model_ready.set(1)
         return model
     except Exception as exc:
         print(f"Whisper unavailable: {exc}")
+        trust_call_whisper_model_ready.set(0)
         return None
 
 
@@ -460,14 +582,22 @@ peer_connections: set[RTCPeerConnection] = set()
 state_root = PROJECT_STATE_ROOT
 identity_config = load_identity_auditor_config()
 identity_store = IdentityEnrollmentStore(state_root / "identity_profiles")
-identity_auditor = IdentityAuditor(
-    store=identity_store,
-    config=identity_config,
-    embedder=ECAPASpeakerEmbedder(
+identity_init_error: str | None = None
+try:
+    identity_auditor = IdentityAuditor(
+        store=identity_store,
         config=identity_config,
-        savedir=identity_config.resolve_model_savedir(),
-    ),
-)
+        embedder=ECAPASpeakerEmbedder(
+            config=identity_config,
+            savedir=identity_config.resolve_model_savedir(),
+        ),
+    )
+    trust_call_iep3_model_ready.set(1)
+except Exception as exc:
+    identity_auditor = None
+    identity_init_error = str(exc)
+    trust_call_iep3_model_ready.set(0)
+    print(f"Identity auditor unavailable: {exc}")
 
 
 @app.get("/metrics")
@@ -484,6 +614,7 @@ async def metrics_endpoint():
             "trust_call_iep3_enrolled_profiles": profile_count,
         }
     )
+    body += "\n" + render_prometheus_client_metrics()
     return Response(
         content=body,
         media_type="text/plain; version=0.0.4; charset=utf-8",
@@ -506,16 +637,17 @@ async def websocket_endpoint(websocket: WebSocket):
         print("WebSocket client disconnected.")
     except Exception as exc:
         print(f"WebSocket crashed: {exc}")
+        trust_call_gateway_websocket_connections_total.labels(status="error").inc()
 
 
 @app.get("/identity/enrollment/{caller_id}")
 async def get_identity_enrollment_status(caller_id: str):
-    return identity_auditor.get_enrollment_status(caller_id)
+    return _require_identity_auditor().get_enrollment_status(caller_id)
 
 
 @app.get("/identity/config")
 async def get_identity_config():
-    return identity_auditor.get_policy_snapshot()
+    return _require_identity_auditor().get_policy_snapshot()
 
 
 @app.get("/identity/live/sessions")
@@ -540,13 +672,14 @@ async def enroll_live_identity_candidate(
     session_id: str,
     payload: LiveSessionEnrollmentPayload,
 ):
+    started = time.perf_counter()
     candidate = live_identity_monitor.get_candidate_embeddings(session_id)
     if candidate is None:
         raise HTTPException(status_code=404, detail="Live identity session not found")
 
     caller_id, embeddings, metadata = candidate
     try:
-        enrollment = identity_auditor.enroll_from_embeddings(
+        enrollment = _require_identity_auditor().enroll_from_embeddings(
             caller_id=caller_id,
             embeddings=embeddings,
             metadata=metadata,
@@ -559,6 +692,8 @@ async def enroll_live_identity_candidate(
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
+    trust_call_iep3_profile_updates_total.labels(result="success").inc()
+    trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
     live_identity_monitor.mark_candidate_enrolled(session_id, enrollment)
     return {
         "session_id": session_id,
@@ -582,8 +717,12 @@ async def discard_live_identity_candidate(session_id: str):
 
 @app.post("/identity/enroll")
 async def enroll_identity(payload: IdentityEnrollmentPayload):
+    started = time.perf_counter()
+    inspected = _inspect_audio_payload(payload.base64_audio, "/identity/enroll")
+    if inspected is None:
+        raise HTTPException(status_code=400, detail="Invalid audio payload")
     try:
-        return identity_auditor.enroll_from_base64(
+        result = _require_identity_auditor().enroll_from_base64(
             caller_id=payload.caller_id,
             base64_audio=payload.base64_audio,
             allow_update=payload.allow_update,
@@ -593,45 +732,67 @@ async def enroll_identity(payload: IdentityEnrollmentPayload):
             synthetic_score=payload.synthetic_score,
             coercion_score=payload.coercion_score,
         )
+        trust_call_iep3_profile_updates_total.labels(result="success").inc()
+        return result
     except IdentityPolicyError as exc:
+        trust_call_iep3_profile_updates_total.labels(result="failed").inc()
         raise HTTPException(status_code=exc.http_status, detail=exc.to_response()) from exc
     except ValueError as exc:
+        trust_call_iep3_profile_updates_total.labels(result="failed").inc()
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
+        trust_call_iep3_profile_updates_total.labels(result="failed").inc()
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    finally:
+        trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
 
 
 @app.post("/identity/verify")
 async def verify_identity(payload: IdentityVerificationPayload):
+    started = time.perf_counter()
+    inspected = _inspect_audio_payload(payload.base64_audio, "/identity/verify")
+    if inspected is None:
+        raise HTTPException(status_code=400, detail="Invalid audio payload")
     try:
-        result = identity_auditor.verify_from_base64(
+        result = _require_identity_auditor().verify_from_base64(
             caller_id=payload.caller_id,
             base64_audio=payload.base64_audio,
         )
+        _record_identity_result_metrics(result)
         return result.to_api_response()
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    finally:
+        trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
 
 
 @app.post("/identity/identify")
 async def identify_identity(payload: IdentityIdentificationPayload):
+    started = time.perf_counter()
+    inspected = _inspect_audio_payload(payload.base64_audio, "/identity/identify")
+    if inspected is None:
+        raise HTTPException(status_code=400, detail="Invalid audio payload")
     try:
-        result = identity_auditor.identify_from_base64(
+        result = _require_identity_auditor().identify_from_base64(
             base64_audio=payload.base64_audio,
             claimed_caller_id=payload.claimed_caller_id,
             top_k=payload.top_k,
         )
+        _record_identity_result_metrics(result)
         return result.to_api_response()
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    finally:
+        trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
 
 
 @app.post("/identity/live/validate")
 async def validate_live_identity_chunk(payload: LiveIdentityValidationPayload):
+    started = time.perf_counter()
     try:
         session = (
             live_identity_monitor.get_session(payload.session_id)
@@ -644,7 +805,12 @@ async def validate_live_identity_chunk(payload: LiveIdentityValidationPayload):
                 source="live_validation",
             )
 
-        audio, sample_rate = decode_base64_audio(payload.base64_audio)
+        try:
+            audio, sample_rate = decode_base64_audio(payload.base64_audio)
+        except Exception as exc:
+            trust_call_audio_decode_failures_total.labels(route="/identity/live/validate").inc()
+            raise HTTPException(status_code=400, detail="Invalid audio payload") from exc
+        _observe_audio_quality(audio, sample_rate)
         identity_result = await process_identity_chunk(
             caller_id=payload.caller_id,
             audio=audio,
@@ -676,6 +842,8 @@ async def validate_live_identity_chunk(payload: LiveIdentityValidationPayload):
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    finally:
+        trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
 
 
 @app.delete("/identity/enrollment/{caller_id}")
@@ -690,39 +858,46 @@ async def delete_identity_enrollment(caller_id: str):
 
 
 async def fetch_rawnet(base64_audio: str) -> float:
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                RAWNET_URL,
-                json={"base64_audio": base64_audio},
-                timeout=5.0,
-            )
-            if response.status_code == 200:
-                data = response.json()
-                return float(data.get("spoof_probability_percent", 0.0))
-            print(f"RawNet service error: {response.status_code} {response.text}")
-    except Exception as exc:
-        print(f"RawNet service unavailable: {exc}")
-    return 0.0
+    started = time.perf_counter()
+    result = await fetch_rawnet_prediction_details(base64_audio, RAWNET_URL, timeout=5.0)
+    trust_call_gateway_rawnet_downstream_latency_seconds.observe(time.perf_counter() - started)
+    status = str(result.get("status", "unknown"))
+    if status == "timeout":
+        trust_call_gateway_downstream_timeout_total.labels(service="rawnet").inc()
+        trust_call_gateway_component_missing_total.labels(component="rawnet_timeout").inc()
+    elif status == "http_error":
+        trust_call_gateway_component_missing_total.labels(component="rawnet_http_error").inc()
+    elif status == "unavailable":
+        trust_call_gateway_component_missing_total.labels(component="rawnet_unavailable").inc()
+    score = clamp_percentage(result.get("score", 0.0))
+    if status == "success":
+        trust_call_gateway_rawnet_spoof_score_percent.observe(score)
+    return score
 
 
 async def fetch_distilbert(text: str) -> dict:
     if not text.strip():
-        return {"semantic_score": 0.0, "label": "insufficient_text"}
-
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                DISTILBERT_URL,
-                json={"scrubbed_text": text},
-                timeout=5.0,
-            )
-            if response.status_code == 200:
-                return response.json()
-            print(f"DistilBERT service error: {response.status_code} {response.text}")
-    except Exception as exc:
-        print(f"DistilBERT service unavailable: {exc}")
-    return {"semantic_score": 0.0, "label": "semantic_unavailable"}
+        trust_call_transcript_empty_total.inc()
+    started = time.perf_counter()
+    result = await fetch_distilbert_prediction_details(text, DISTILBERT_URL, timeout=5.0)
+    trust_call_gateway_distilbert_downstream_latency_seconds.observe(time.perf_counter() - started)
+    status = str(result.get("status", "unknown"))
+    data = dict(result.get("data", {}))
+    label = str(data.get("label", "semantic_unavailable"))
+    if status == "timeout":
+        trust_call_gateway_downstream_timeout_total.labels(service="distilbert").inc()
+        trust_call_gateway_component_missing_total.labels(component="distilbert_timeout").inc()
+    elif status == "http_error":
+        trust_call_gateway_component_missing_total.labels(component="distilbert_http_error").inc()
+    elif status == "unavailable":
+        trust_call_gateway_component_missing_total.labels(component="distilbert_unavailable").inc()
+    if status == "success":
+        trust_call_gateway_semantic_score.observe(
+            clamp_unit_interval(data.get("semantic_score", 0.0))
+        )
+    if label in {"insufficient_text", "need_speech"}:
+        trust_call_transcript_empty_total.inc()
+    return data
 
 
 async def orchestrate_late_fusion(
@@ -733,20 +908,21 @@ async def orchestrate_late_fusion(
     signal_quality: dict | None = None,
     semantic_context_seconds: float = 0.0,
 ) -> None:
+    orchestration_started = time.perf_counter()
     signal_quality = signal_quality or {"usable": True, "reason": "not_measured"}
     rawnet_task = (
-        fetch_rawnet_prediction(base64_audio, RAWNET_URL)
+        fetch_rawnet(base64_audio)
         if signal_quality.get("usable", True)
         else _immediate_float(0.0)
     )
     distilbert_task = (
-        fetch_distilbert_prediction(text_context, DISTILBERT_URL)
+        fetch_distilbert(text_context)
         if _semantic_context_ready(text_context, semantic_context_seconds)
         else _immediate_dict(_semantic_waiting_result(text_context, semantic_context_seconds))
     )
     synthetic_score, distilbert_data = await asyncio.gather(rawnet_task, distilbert_task)
 
-    semantic_score = float(distilbert_data.get("semantic_score", 0.0))
+    semantic_score = clamp_unit_interval(distilbert_data.get("semantic_score", 0.0))
     semantic_label = str(distilbert_data.get("label", "benign"))
     real_score = max(0.0, 100.0 - synthetic_score)
     if signal_quality.get("usable", True):
@@ -758,11 +934,50 @@ async def orchestrate_late_fusion(
     else:
         signal_score = "Need clearer speech"
     semantic_intent = f"{semantic_label.upper()} ({semantic_score:.2f})"
+    fusion_started = time.perf_counter()
     fusion_status, is_threat = build_fusion_status(
         identity_result=identity_result,
         synthetic_score=synthetic_score,
         semantic_score=semantic_score,
     )
+    trust_call_gateway_fusion_latency_seconds.observe(time.perf_counter() - fusion_started)
+    fusion_score = normalized_fusion_score(identity_result, synthetic_score, semantic_score)
+    trust_call_gateway_fusion_score.observe(fusion_score)
+    dominant = dominant_signal(identity_result, synthetic_score, semantic_score)
+    trust_call_gateway_decision_source_total.labels(dominant_signal=dominant).inc()
+    if is_threat:
+        trust_call_gateway_user_alerts_total.labels(risk_level=fusion_status).inc()
+
+    if synthetic_score >= 60.0 and semantic_score < 0.3:
+        trust_call_gateway_conflict_cases_total.labels(
+            conflict_type="high_rawnet_low_semantic"
+        ).inc()
+    if semantic_score >= 0.6 and synthetic_score < 25.0:
+        trust_call_gateway_conflict_cases_total.labels(
+            conflict_type="high_semantic_low_rawnet"
+        ).inc()
+    if identity_result.status in {"mismatch", "unknown_speaker"} and semantic_score < 0.3:
+        trust_call_gateway_conflict_cases_total.labels(
+            conflict_type="identity_mismatch_low_semantic"
+        ).inc()
+
+    if semantic_label in {"semantic_unavailable", "insufficient_text", "need_speech"}:
+        trust_call_gateway_degraded_decisions_total.labels(
+            missing_component=semantic_label
+        ).inc()
+    if not signal_quality.get("usable", True):
+        trust_call_gateway_degraded_decisions_total.labels(missing_component="audio_unusable").inc()
+    if identity_result.status in {
+        "model_unavailable",
+        "missing_caller_id",
+        "not_enrolled",
+        "profile_incompatible",
+        "unknown_speaker",
+        "no_enrolled_profiles",
+    }:
+        trust_call_gateway_degraded_decisions_total.labels(
+            missing_component="identity_unavailable"
+        ).inc()
 
     live_identity_monitor.record_fusion_result(
         session_id=session_id,
@@ -798,6 +1013,9 @@ async def orchestrate_late_fusion(
             "candidate_enrollment_ready": candidate_embedding_count > 0,
             **identity_result.to_telemetry(),
         }
+    )
+    trust_call_gateway_end_to_end_decision_latency_seconds.observe(
+        time.perf_counter() - orchestration_started
     )
 
 
@@ -857,17 +1075,21 @@ async def process_identity_chunk(
     identify_if_unenrolled: bool = False,
     top_k: int = 3,
 ) -> IdentityResult:
-    identity_result = identity_auditor.verify_chunk(
-        caller_id=caller_id,
-        audio=audio,
-        sample_rate=sample_rate,
-    )
+    started = time.perf_counter()
+    if identity_auditor is None:
+        identity_result = _identity_unavailable_result(caller_id, sample_rate, audio)
+    else:
+        identity_result = identity_auditor.verify_chunk(
+            caller_id=caller_id,
+            audio=audio,
+            sample_rate=sample_rate,
+        )
     if identify_if_unenrolled and identity_result.status in {
         "missing_caller_id",
         "not_enrolled",
         "profile_incompatible",
     }:
-        identity_result = identity_auditor.identify_chunk(
+        identity_result = _require_identity_auditor().identify_chunk(
             audio=audio,
             sample_rate=sample_rate,
             claimed_caller_id=caller_id,
@@ -875,7 +1097,7 @@ async def process_identity_chunk(
         )
     elif identity_result.status == "not_enrolled":
         try:
-            embedding, metadata = identity_auditor.extract_candidate_embedding(
+            embedding, metadata = _require_identity_auditor().extract_candidate_embedding(
                 audio=audio,
                 sample_rate=sample_rate,
             )
@@ -921,6 +1143,8 @@ async def process_identity_chunk(
         except RuntimeError as exc:
             print(f"Unable to collect TOFU candidate chunk: {exc}")
 
+    _record_identity_result_metrics(identity_result)
+    trust_call_iep3_identity_latency_seconds.observe(time.perf_counter() - started)
     chunk_peak = float(np.max(np.abs(np.asarray(audio)))) if np.asarray(audio).size else 0.0
     live_identity_monitor.record_chunk(
         session_id=session_id,
@@ -935,16 +1159,30 @@ async def process_identity_chunk(
 
 def sync_transcribe_wav_bytes(wav_bytes: bytes) -> str:
     if whisper_model is None:
+        trust_call_whisper_transcription_requests_total.labels(result="unavailable").inc()
         return ""
 
     temp_path = ""
+    started = time.perf_counter()
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
             temp_file.write(wav_bytes)
             temp_path = temp_file.name
+        trust_call_whisper_transcription_requests_total.labels(result="started").inc()
         segments, _ = whisper_model.transcribe(temp_path, beam_size=1)
-        return " ".join(segment.text for segment in segments).strip()
+        transcript = " ".join(segment.text for segment in segments).strip()
+        if transcript:
+            trust_call_whisper_transcription_requests_total.labels(result="success").inc()
+            trust_call_whisper_transcript_length_chars.observe(len(transcript))
+        else:
+            trust_call_whisper_transcription_requests_total.labels(result="empty").inc()
+            trust_call_whisper_empty_transcripts_total.inc()
+        return transcript
+    except Exception:
+        trust_call_whisper_transcription_requests_total.labels(result="error").inc()
+        raise
     finally:
+        trust_call_whisper_transcription_latency_seconds.observe(time.perf_counter() - started)
         if temp_path:
             try:
                 os.unlink(temp_path)
@@ -961,6 +1199,7 @@ def measure_audio_quality(audio: np.ndarray) -> dict[str, float | bool | str]:
             "rms": 0.0,
             "peak": 0.0,
             "active_ratio": 0.0,
+            "silence_ratio": 1.0,
         }
 
     if np.max(np.abs(samples)) > 1.5:
@@ -970,6 +1209,7 @@ def measure_audio_quality(audio: np.ndarray) -> dict[str, float | bool | str]:
     rms = float(np.sqrt(np.mean(np.square(samples))))
     peak = float(np.max(abs_samples))
     active_ratio = float(np.mean(abs_samples >= SIGNAL_MIN_PEAK))
+    silence_ratio = float(np.mean(abs_samples < 1e-3))
     usable = (
         rms >= SIGNAL_MIN_RMS
         and peak >= SIGNAL_MIN_PEAK
@@ -989,6 +1229,7 @@ def measure_audio_quality(audio: np.ndarray) -> dict[str, float | bool | str]:
         "rms": round(rms, 5),
         "peak": round(peak, 5),
         "active_ratio": round(active_ratio, 5),
+        "silence_ratio": round(silence_ratio, 5),
     }
 
 
@@ -1031,6 +1272,9 @@ async def consume_audio_track(track, caller_id: str, session_id: str):
                 chunk_audio = combined_audio.T
                 max_volume = np.max(np.abs(chunk_audio))
                 signal_quality = measure_audio_quality(chunk_audio)
+                trust_call_audio_silence_ratio.observe(float(signal_quality["silence_ratio"]))
+                if _duration_seconds(chunk_audio, sample_rate) < 0.5:
+                    trust_call_audio_too_short_total.inc()
                 print(
                     "Dispatching full pipeline chunk "
                     f"{chunk_counter} | peak={float(max_volume):.2f} "
@@ -1044,10 +1288,16 @@ async def consume_audio_track(track, caller_id: str, session_id: str):
                 base64_audio = base64.b64encode(wav_bytes).decode("utf-8")
 
                 if signal_quality["usable"]:
-                    transcription = await asyncio.to_thread(sync_transcribe_wav_bytes, wav_bytes)
+                    try:
+                        transcription = await asyncio.to_thread(sync_transcribe_wav_bytes, wav_bytes)
+                    except Exception as exc:
+                        print(f"Whisper transcription failed: {exc}")
+                        transcription = ""
                     print(f"🔥 WHISPER HEARD: '{transcription}'")
                     if transcription:
                         context_memory.append((transcription, target_seconds))
+                    else:
+                        trust_call_transcript_empty_total.inc()
                 else:
                     transcription = ""
                     print(f"Skipping RawNet/STT for weak audio: {signal_quality['reason']}")
@@ -1119,6 +1369,7 @@ async def process_offer(params: Offer):
         print(f"Peer connection state: {pc.connectionState}")
         if pc.connectionState in {"failed", "closed", "disconnected"}:
             peer_connections.discard(pc)
+            trust_call_gateway_sessions_completed_total.labels(result=pc.connectionState).inc()
             live_identity_monitor.record_error(
                 live_session["session_id"],
                 f"peer_connection_{pc.connectionState}",

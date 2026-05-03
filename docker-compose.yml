@@ -73,3 +73,16 @@ services:
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: trust-call-cadvisor
+    profiles: ["cadvisor"]
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: unless-stopped

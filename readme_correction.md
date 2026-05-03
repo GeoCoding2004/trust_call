@@ -49,8 +49,8 @@ The project is an **Application** project, not a pure research project. Every AI
 | `distilbert-service/Dockerfile` | DistilBERT container definition |
 | `TrustCallApp/` | React Native Android mobile app |
 | `TrustCallApp/src/config/backend.ts` | Cloud backend URL switch |
-| `monitoring/prometheus.yml` | Prometheus scrape targets for all three AI services |
-| `monitoring/grafana/` | Grafana provisioning: datasource + Trust-Call AI dashboard |
+| `monitoring/prometheus.yml` | Prometheus scrape targets for all three AI services plus optional cAdvisor |
+| `monitoring/grafana/` | Grafana provisioning: datasource + generated Trust-Call AI dashboard |
 | `deployment/gcp/` | GCP Compute Engine deployment files |
 | `deployment/azure/` | Azure deployment files |
 | `deployment/kubernetes/` | Kubernetes manifests (portability evidence) |
@@ -157,7 +157,7 @@ Production-oriented AI components:
 | **G2** Branching, review, traceability | `dev` branch, PR-based workflow | ✅ | CI runs on PR; branch protection recommended |
 | **M1** Automated lifecycle pipeline | `.github/workflows/test.yml`, `.github/workflows/docker-build.yml` | ✅ | pytest + Docker build on every push and PR |
 | **M2** Experiment tracking and thresholds | `rawnet-service/mlruns/` (MLflow runs), `mlflow.db`, `configs/iep3_identity.json` (threshold policy) | ✅ | MLflow experiment tracking present; IEP3 thresholds configurable |
-| **M3** Monitoring and ML-specific signals | `monitoring/prometheus.yml`, `monitoring/grafana/`, `docs/observability.md`, `/metrics` endpoints on all three services | ✅ | Spoof probability, semantic score, identity decisions, fusion outcomes, active sessions, enrolled profiles |
+| **M3** Monitoring and ML-specific signals | `docs/observability.md`, `monitoring/prometheus.yml`, `monitoring/grafana/dashboards/trust-call-ai-services.json`, `trust_call_backend/observability_metrics.py`, `rawnet-service/main.py`, `distilbert-service/main.py` | ✅ | Readiness, request volume, latency, score distributions, errors, fallbacks, identity, fusion, data quality, and optional resource metrics |
 | **M4** Documentation completeness | `README.md`, `readme_correction.md`, `docs/` directory | ✅ | Architecture, setup, demo, evaluation plan, observability, production hardening all documented |
 
 ---
