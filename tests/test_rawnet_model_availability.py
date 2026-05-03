@@ -33,3 +33,15 @@ def test_predict_returns_503_when_model_missing(rawnet_app):
     with TestClient(rawnet_app) as client:
         r = client.post('/predict', json={'base64_audio': 'QQ=='})
         assert r.status_code == 503
+
+
+def test_metrics_expose_custom_rawnet_metric_names(rawnet_app):
+    with TestClient(rawnet_app) as client:
+        r = client.get('/metrics')
+        assert r.status_code == 200
+        body = r.text
+        assert 'trust_call_rawnet_model_ready' in body
+        assert 'trust_call_rawnet_predictions_total' in body
+        assert 'trust_call_rawnet_errors_total' in body
+        assert 'trust_call_rawnet_fallback_total' in body
+        assert 'trust_call_rawnet_inference_latency_seconds' in body

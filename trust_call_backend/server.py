@@ -199,10 +199,18 @@ def _duration_seconds(audio: np.ndarray, sample_rate: int) -> float:
 
 def _observe_audio_quality(audio: np.ndarray, sample_rate: int) -> dict[str, float | bool | str]:
     quality = measure_audio_quality(audio)
-    trust_call_audio_silence_ratio.observe(float(1.0 - float(quality["active_ratio"])))
+    trust_call_audio_silence_ratio.observe(float(quality["silence_ratio"]))
     if _duration_seconds(audio, sample_rate) < 0.5:
         trust_call_audio_too_short_total.inc()
     return quality
+
+
+def _semantic_degradation_label(label: str) -> str | None:
+    if label in {"semantic_unavailable", "insufficient_text", "need_speech"}:
+        return label
+    if label.startswith("building_context_"):
+        return "building_context"
+    return None
 
 
 def _inspect_audio_payload(base64_audio: str, route_label: str) -> tuple[np.ndarray, int] | None:
@@ -961,9 +969,10 @@ async def orchestrate_late_fusion(
             conflict_type="identity_mismatch_low_semantic"
         ).inc()
 
-    if semantic_label in {"semantic_unavailable", "insufficient_text", "need_speech"}:
+    semantic_degradation = _semantic_degradation_label(semantic_label)
+    if semantic_degradation is not None:
         trust_call_gateway_degraded_decisions_total.labels(
-            missing_component=semantic_label
+            missing_component=semantic_degradation
         ).inc()
     if not signal_quality.get("usable", True):
         trust_call_gateway_degraded_decisions_total.labels(missing_component="audio_unusable").inc()
