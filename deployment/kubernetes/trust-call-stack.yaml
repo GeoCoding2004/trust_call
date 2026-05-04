@@ -1,0 +1,320 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trust-call
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trust-call-prometheus-config
+  namespace: trust-call
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5s
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+
+      - job_name: rawnet_audio_ai
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["rawnet-service:8000"]
+
+      - job_name: distilbert_semantic_ai
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["distilbert-service:8002"]
+
+      - job_name: iep3_identity_gateway
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["trust-call-backend:8080"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trust-call-grafana-provisioning
+  namespace: trust-call
+data:
+  prometheus-datasource.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        uid: trustcall-prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: true
+  dashboard-provider.yml: |
+    apiVersion: 1
+    providers:
+      - name: Trust-Call
+        orgId: 1
+        folder: Trust-Call
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rawnet-service
+  namespace: trust-call
+  labels:
+    app: rawnet-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rawnet-service
+  template:
+    metadata:
+      labels:
+        app: rawnet-service
+    spec:
+      containers:
+        - name: rawnet-service
+          image: ghcr.io/YOUR_ORG/trust-call-rawnet:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rawnet-service
+  namespace: trust-call
+spec:
+  selector:
+    app: rawnet-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: distilbert-service
+  namespace: trust-call
+  labels:
+    app: distilbert-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: distilbert-service
+  template:
+    metadata:
+      labels:
+        app: distilbert-service
+    spec:
+      containers:
+        - name: distilbert-service
+          image: ghcr.io/YOUR_ORG/trust-call-distilbert:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+          env:
+            - name: DISTILBERT_MODEL_NAME
+              value: ./custom_scam_model
+            - name: DISTILBERT_USE_CLASSIFIER
+              value: "true"
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8002
+            initialDelaySeconds: 20
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: distilbert-service
+  namespace: trust-call
+spec:
+  selector:
+    app: distilbert-service
+  ports:
+    - name: http
+      port: 8002
+      targetPort: 8002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trust-call-backend
+  namespace: trust-call
+  labels:
+    app: trust-call-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trust-call-backend
+  template:
+    metadata:
+      labels:
+        app: trust-call-backend
+    spec:
+      containers:
+        - name: trust-call-backend
+          image: ghcr.io/YOUR_ORG/trust-call-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RAWNET_URL
+              value: http://rawnet-service:8000/predict
+            - name: DISTILBERT_URL
+              value: http://distilbert-service:8002/predict
+            - name: TRUST_CALL_SIGNAL_MIN_RMS
+              value: "0.0025"
+            - name: TRUST_CALL_SEMANTIC_CONTEXT_SECONDS
+              value: "8.0"
+          resources:
+            requests:
+              cpu: "1"
+              memory: 3Gi
+            limits:
+              cpu: "2"
+              memory: 6Gi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trust-call-backend
+  namespace: trust-call
+spec:
+  type: LoadBalancer
+  selector:
+    app: trust-call-backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: trust-call
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:latest
+          ports:
+            - containerPort: 9090
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: trust-call-prometheus-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: trust-call
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: trust-call
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning/datasources/prometheus.yml
+              subPath: prometheus-datasource.yml
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning/dashboards/dashboards.yml
+              subPath: dashboard-provider.yml
+      volumes:
+        - name: grafana-provisioning
+          configMap:
+            name: trust-call-grafana-provisioning
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: trust-call
+spec:
+  type: LoadBalancer
+  selector:
+    app: grafana
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000

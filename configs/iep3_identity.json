@@ -1,0 +1,15 @@
+{
+  "target_sample_rate_hz": 16000,
+  "min_speech_seconds": 1.5,
+  "min_rms": 0.001,
+  "match_threshold": 0.69,
+  "review_threshold": 0.66,
+  "ema_alpha": 0.2,
+  "require_safe_call_confirmation_for_enrollment": true,
+  "require_safe_call_confirmation_for_update": true,
+  "min_match_confidence_for_update": 0.9,
+  "max_synthetic_score_for_update": 0.35,
+  "max_coercion_score_for_update": 0.35,
+  "model_source": "speechbrain/spkrec-ecapa-voxceleb",
+  "model_savedir": "trust_call_backend/state/models/ecapa_voxceleb"
+}

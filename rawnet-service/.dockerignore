@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.png
+*.csv
+*.json
+*.log
+mlruns/
+pre_trained_DF_model.pth
+test_client.py
+train_transfer.py
+evaluate_rawnet.py
+download_data.py

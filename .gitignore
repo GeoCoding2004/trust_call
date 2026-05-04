@@ -209,8 +209,52 @@ __marimo__/
 
 # Trust-Call Raw Data Exclusions
 data/
+!data/
+data/*
+!data/evaluation/
+data/evaluation/*
+!data/evaluation/iep3/
+data/evaluation/iep3/*
+!data/evaluation/iep3/README.md
 datasets/
 *.wav
 *.flac
 *.mp3
 *.m4a
+
+
+# Ignore heavy AI weights and audio tests
+*.pth
+*.wav
+
+
+# React Native / Node
+TrustCallApp/node_modules/
+
+# Android Build Caches
+TrustCallApp/android/.gradle/
+TrustCallApp/.gradle-local/
+TrustCallApp/android/build/
+TrustCallApp/android/app/build/
+TrustCallApp/android/app/.cxx/
+
+
+
+# Ignore training audio and Hugging Face cache
+training_data/
+hf_cache/
+*.wav
+*.pth
+
+# Ignore Python environments and cache
+venv/
+__pycache__/
+
+
+
+custom_scam_model/
+custom_scam_model.zip
+trust_call_backend/state/
+*.zip
+results/
+checkpoint-*/

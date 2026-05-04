@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*.log
+test_client.py
+test_main.py

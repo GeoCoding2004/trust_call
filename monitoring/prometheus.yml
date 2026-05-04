@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'rawnet_audio_ai'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['rawnet-service:8000']
+
+  - job_name: 'distilbert_semantic_ai'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['distilbert-service:8002']
+
+  - job_name: 'iep3_identity_gateway'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8080']

@@ -1,0 +1,95 @@
+name: Deploy to GCP VM
+
+on:
+  workflow_run:
+    workflows:
+      - Docker Build Validation
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to deploy
+        required: true
+        default: dev
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: gcp-vm-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Docker Compose stack
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'dev'
+      )
+
+    steps:
+      - name: Confirm Tests workflow passed for the same commit
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          run_id="$(
+            gh run list \
+              --workflow "Tests" \
+              --branch dev \
+              --commit "$HEAD_SHA" \
+              --json databaseId,conclusion,status \
+              --jq '.[] | select(.status == "completed") | .databaseId' \
+              | head -n 1
+          )"
+
+          if [ -z "$run_id" ]; then
+            echo "No completed Tests workflow found for commit $HEAD_SHA."
+            exit 1
+          fi
+
+          conclusion="$(gh run view "$run_id" --json conclusion --jq '.conclusion')"
+          if [ "$conclusion" != "success" ]; then
+            echo "Tests workflow did not pass for commit $HEAD_SHA. Conclusion: $conclusion"
+            exit 1
+          fi
+
+      - name: Deploy to VM over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            APP_DIR="${GCP_VM_APP_DIR:-/home/lahoudjohn12/trust_call}"
+            DEPLOY_BRANCH="${{ github.event.inputs.branch || 'dev' }}"
+
+            cd "$APP_DIR"
+            git fetch origin "$DEPLOY_BRANCH"
+            git checkout "$DEPLOY_BRANCH"
+            git pull --ff-only origin "$DEPLOY_BRANCH"
+
+            test -f rawnet-service/fine_tuned_DF_model.pth
+            test -f distilbert-service/custom_scam_model/model.safetensors
+
+            docker compose config --quiet
+            docker compose up -d --build
+            docker compose ps
+
+            curl -fsS http://127.0.0.1:8080/docs >/dev/null
+            curl -fsS http://127.0.0.1:8080/metrics >/dev/null
+            curl -fsS http://127.0.0.1:8000/metrics >/dev/null
+            curl -fsS http://127.0.0.1:8002/metrics >/dev/null
+
+            echo "Trust-Call deployment completed successfully."

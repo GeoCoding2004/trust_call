@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: Trust-Call
+    orgId: 1
+    folder: Trust-Call
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

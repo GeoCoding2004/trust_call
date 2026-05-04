@@ -1,0 +1,512 @@
+text,label
+"Hey mom, it's me, I know it sounds weird but I’m using a different phone. I got into a car accident and they say I hit someone. I’m at the station and they need bail money fast, please don’t tell anyone, just go buy Apple gift cards and read me the codes, okay?",1
+"Hi, this is Coinbase security, we just flagged a login from another country trying to access your wallet. We need to secure your funds right now. Do you have your recovery phrase nearby? I’ll guide you to move everything into a safe wallet we control temporarily.",1
+"Hello, this is your bank’s fraud department. We noticed a suspicious charge for eight hundred dollars. To cancel it immediately, we’ve sent a six digit code to your phone. Please read it back right now so we can block the transaction before it completes.",1
+"Hi, I’m calling from Amazon billing, looks like you were charged twice for a recent purchase. We’re issuing a refund of four hundred dollars, but I need you to install AnyDesk so I can process it securely on your system. Just follow my steps, okay?",1
+"Grandma, it’s me, please don’t panic. I’m in trouble, I was arrested after a fight and they’re saying I need money for a lawyer right now. Please don’t call my parents, just send money through gift cards, I’ll tell you how, please hurry.",1
+"This is Binance support, we detected someone attempting to drain your crypto assets. We need to move your funds into a secure cold wallet. I’ll give you the address and you just transfer everything immediately, or you could lose it within minutes.",1
+"Hello sir, urgent call from your bank. A purchase was attempted on your account. We’ve sent you a verification code. Please confirm it so we can stop the fraud. If we don’t verify now, the transaction will be approved automatically.",1
+"Hi, this is Microsoft support. You were charged mistakenly for a subscription renewal. We’re refunding you six hundred dollars. I need remote access to your computer to process it. Please download AnyDesk and share the code so I can assist you.",1
+"Mom, it’s me, I’m using a friend’s phone. I got into an accident and the other driver is injured. They’re asking for money right now to settle this. Please go to the store and get gift cards, I’ll explain, just stay on the phone with me.",1
+"Coinbase security here, we see suspicious activity. Your account may be compromised. To protect your funds, we need your seed phrase to verify ownership. Please read it slowly, this is urgent or your wallet could be drained completely.",1
+"Hello, fraud prevention department here. We’ve sent a one time code to your phone. Please read it back immediately so we can block an unauthorized payment. This is time sensitive, if we delay, the money will be gone.",1
+"Amazon support calling, looks like there’s a billing error. We need to issue a refund but our system requires remote verification. Install AnyDesk and give me the code. I’ll show you the refund processing live so you can see everything.",1
+"Grandpa, it’s me, please don’t hang up. I’m in jail right now, I got picked up for something stupid. They said I need bail money fast. Please don’t tell mom and dad, just wire it or get gift cards, I’ll walk you through it.",1
+"This is Binance security, your account is under attack right now. Hackers are trying to withdraw your funds. We need to move everything to a secure address. I’ll give you the wallet, just send all your crypto immediately.",1
+"Hello, your bank’s fraud team here. We’ve sent you a code. Please confirm it now to cancel a suspicious charge. If you don’t, the charge will go through and we won’t be able to reverse it later.",1
+"Hi, Microsoft billing department. We accidentally overcharged you and we’re issuing a refund. To process it, I need you to install remote access software. It’s just temporary, I’ll guide you step by step.",1
+"Hey mom, it’s me, I’m really scared. I was in a car accident and they say I need to pay damages right away. Please don’t tell anyone, just help me out. Can you get gift cards and read me the codes?",1
+"This is Coinbase support, urgent notice. There’s an unauthorized withdrawal pending. To secure your account, we need your recovery phrase. Please read it to me carefully so we can lock your wallet.",1
+"Hello, fraud alert from your bank. We’ve sent a six digit code to your phone. Please read it back now so we can cancel a suspicious transaction. Time is critical here.",1
+"Amazon support here, looks like you were mistakenly charged for a service. We’re refunding you immediately, but I need remote access to complete the process. Please install AnyDesk and share the code.",1
+"Grandma, it’s me, I’m in trouble. I got into a situation and I need money fast. Please don’t call anyone else, just stay on the phone and I’ll tell you how to send it with gift cards.",1
+"Binance security team calling, your funds are at risk. We need to transfer them into a secure wallet. I’ll guide you step by step, just don’t delay or the hackers will take everything.",1
+"Hello, this is your bank. We’ve sent a verification code. Please read it back so we can stop a fraudulent charge. This is urgent, we need to act quickly.",1
+"Microsoft support calling, we owe you a refund. To process it, we need to access your system remotely. Please install the software and give me the access code.",1
+"Mom, it’s me, I can’t talk long. I’m in trouble with the police. I need bail money now. Please go get Apple gift cards and stay on the phone with me, don’t tell anyone else.",1
+"Coinbase security here, we’ve detected a breach attempt. To secure your account, we need you to provide your recovery phrase. This is urgent, please don’t delay.",1
+"Hello, fraud department here. A suspicious charge is pending. We’ve sent you a code, please read it back now so we can cancel it immediately.",1
+"Amazon billing support, we’re issuing a refund for an overcharge. Please install remote access software so we can complete the transaction securely.",1
+"Grandpa, it’s me, I’m in serious trouble. I need money fast or things will get worse. Please don’t call anyone, just help me by sending gift cards.",1
+"Binance security calling, your wallet is compromised. We need to move your funds now. I’ll give you the address, just transfer everything quickly.",1
+"Hello, your bank here. We’ve sent a code. Please read it back so we can stop a fraudulent transaction. This is very urgent.",1
+"Microsoft support here, we’re processing your refund. Please install AnyDesk so I can access your system and complete the process.",1
+"Mom, it’s me, I’m scared. I had an accident and I need money now. Please go buy gift cards and read me the codes, I’ll explain everything later.",1
+"Coinbase security, urgent alert. Your account is under attack. Please provide your recovery phrase so we can secure your funds immediately.",1
+"Hello, fraud alert. We’ve sent a verification code. Please read it back to stop a suspicious charge.",1
+"Amazon support, we need remote access to process your refund. Please install the app and share the code.",1
+"Grandma, it’s me, I’m in trouble. Please don’t tell anyone, I just need your help. Can you send money through gift cards right now?",1
+"Binance security here, hackers are trying to drain your wallet. We need to move funds immediately to a secure address.",1
+"Hello, bank fraud team. We’ve sent a code, please confirm it now to cancel a suspicious transaction.",1
+"Microsoft support, we’re issuing a refund. Please install remote software so we can complete the process.",1
+"Mom, please don’t panic, it’s me. I’m in trouble and I need money urgently. Please get gift cards and stay on the phone with me.",1
+"Coinbase security calling, we need your recovery phrase to secure your wallet. This is urgent, please provide it now.",1
+"Hello, fraud department. A charge is pending. Please read the code we sent to cancel it immediately.",1
+"Amazon support here, we need remote access to issue your refund. Please install AnyDesk and share the code.",1
+"Grandpa, it’s me, I need help fast. Please don’t call anyone, just send money using gift cards.",1
+"Binance security, your account is compromised. Move your funds now to avoid loss.",1
+"Hello, bank here. Please read back the code to stop fraud.",1
+"Microsoft support, install remote access software to process refund.",1
+"Mom, it’s me, I’m in trouble. Please get gift cards and help me.",1
+"Coinbase security, provide your recovery phrase now.",1
+"Fraud department, read back your code immediately.",1
+"Amazon support, install AnyDesk for refund.",1
+"Grandma, please send money via gift cards.",1
+"Binance security, transfer funds now.",1
+"Bank fraud, confirm code now.",1
+"Microsoft refund, install remote access.",1
+"Mom, I need help urgently, gift cards please.",1
+"Coinbase alert, share your recovery phrase.",1
+"Fraud alert, read code now.",1
+"Amazon refund, install software.",1
+"Grandpa, send money now.",1
+"Binance alert, transfer funds.",1
+"Bank fraud, confirm code.",1
+"Microsoft refund, install app.",1
+"Mom, urgent help needed.",1
+"Coinbase security, phrase now.",1
+"Fraud code, read now.",1
+"Amazon refund, remote access.",1
+"Grandma, help me now.",1
+"Binance, transfer funds.",1
+"Bank, confirm code.",1
+"Microsoft, install software.",1
+"Mom, gift cards please.",1
+"Coinbase, recovery phrase.",1
+"Fraud, read code.",1
+"Amazon, install AnyDesk.",1
+"Grandpa, send money.",1
+"Binance, urgent transfer.",1
+"Bank, code now.",1
+"Microsoft, remote access.",1
+"Mom, urgent help.",1
+"Coinbase, phrase needed.",1
+"Fraud, confirm code.",1
+"Amazon, refund process.",1
+"Grandma, money needed.",1
+"Binance, funds transfer.",1
+"Bank, verify code.",1
+"Microsoft, install app.",1
+"Uh, hey mom, it’s me, listen, I’m using someone else’s phone, okay? I got into, um, a car accident and things got really bad. They’re saying I need to pay right now or I could get arrested. Please don’t call anyone, just, uh, go get Apple gift cards and read me the codes, please hurry.",1
+"Hello, uh, this is Coinbase security, listen carefully, we just detected an unauthorized login from, um, overseas. Your funds are at risk right now. I need you to, uh, get your recovery phrase and read it to me so we can secure your wallet before anything gets stolen, okay?",1
+"Hi, yeah, this is your bank’s fraud department, um, we’re seeing a suspicious charge coming through right now. I need to stop it before it completes. I just sent a six digit code to your phone, uh, just read it back to me quickly so we can cancel this, alright?",1
+"Uh, hello, this is Amazon billing support, listen, you were, um, overcharged for a purchase and we need to issue a refund. I just need you to install AnyDesk so I can, uh, access your screen and process it for you, it’s quick, just follow what I say.",1
+"Grandma, uh, it’s me, please don’t freak out, okay? I’m in trouble, I got picked up by the police and they’re saying I need money for bail. Please don’t tell mom or dad, just, um, go get gift cards and I’ll tell you what to do, please stay on the phone.",1
+"Uh hi, this is Binance security team, listen, we’re seeing active attempts to drain your account right now. You need to move your funds immediately. I’ll give you a secure wallet address, just, uh, transfer everything there so we can protect it, okay?",1
+"Hello, uh, I’m calling from your bank, fraud prevention. There’s a charge being processed right now that looks suspicious. I sent you a code, um, can you just read it back to me quickly so I can stop the transaction before it goes through?",1
+"Hi, uh, Microsoft support here, listen, you were charged for a subscription you didn’t use. We’re issuing a refund, but I need to, um, connect to your computer. Please install AnyDesk and give me the code so I can complete it for you.",1
+"Mom, uh, listen, it’s me, I’m in trouble. I got into a situation and they’re asking for money right now. Please don’t call anyone else, just, um, go buy some Apple gift cards and read me the codes, I’ll explain everything after.",1
+"Hello, uh, Coinbase support calling, we detected unusual activity on your account. Your funds could be at risk. I need your recovery phrase to verify ownership and secure everything. Just, uh, read it slowly to me so I can lock it down.",1
+"Hi, uh, fraud department here, there’s a transaction happening right now on your account. I sent a verification code to your phone. Please, um, read it back immediately so we can block this before it’s too late.",1
+"Uh, hello, Amazon support, we made a mistake and charged you twice. I’m here to issue a refund, but I need remote access. Just, um, install AnyDesk and share the code, I’ll handle the rest for you quickly.",1
+"Grandpa, uh, it’s me, listen, I’m in serious trouble right now. I got arrested and I need bail money fast. Please don’t call anyone, just, um, stay on the phone and go get gift cards, I’ll tell you exactly what to do.",1
+"Hi, uh, Binance security here, your wallet is currently under attack. We need to move your assets immediately. I’ll provide a secure address, just, um, transfer your funds there so they’re safe, okay?",1
+"Hello, uh, your bank calling, fraud alert. There’s a charge pending and we need to verify it. I sent you a code, um, please read it back now so we can cancel the transaction before it completes.",1
+"Uh, hi, Microsoft billing support, we’re processing a refund for you. To do that, I need to access your computer remotely. Please, um, install the software and give me the code so I can proceed.",1
+"Mom, uh, it’s me, please listen, I’m in trouble and I need help fast. I can’t explain everything right now, just, um, go get Apple gift cards and read me the codes, please don’t tell anyone.",1
+"Hello, uh, Coinbase security team, we detected a breach attempt on your account. Your funds are at risk. I need your recovery phrase right now to secure your wallet. Just, um, read it to me carefully.",1
+"Hi, uh, fraud department, there’s a suspicious transaction happening. I sent you a code, please, um, read it back immediately so we can stop it before the money goes through.",1
+"Uh, hello, Amazon support, we’re issuing a refund for an overcharge. I need you to install AnyDesk so I can process it directly on your system. Just, um, follow my instructions.",1
+"Grandma, uh, it’s me, I’m in trouble, please don’t hang up. I need money fast or things will get worse. Just, um, go get gift cards and I’ll explain how to send them.",1
+"Hi, uh, Binance support, we’re seeing unauthorized withdrawals on your account. You need to act fast. I’ll give you a secure wallet, just, um, transfer your funds there immediately.",1
+"Hello, uh, your bank’s fraud team, there’s a charge being processed. I sent a code to your phone, um, please read it back so we can cancel it right now.",1
+"Uh, hi, Microsoft support, we’re refunding you for a billing error. I need remote access to your computer. Please, um, install the app and give me the code.",1
+"Mom, uh, listen, it’s me, I’m in a really bad situation. I need money right now. Please don’t call anyone, just, um, go get gift cards and stay on the phone.",1
+"Hello, uh, Coinbase support, there’s suspicious activity on your wallet. I need your recovery phrase to secure your account. Please, um, read it to me now.",1
+"Hi, uh, fraud department, a transaction is pending. I sent you a code, please, um, read it back so we can stop it immediately.",1
+"Uh, hello, Amazon support, we’re issuing a refund. I need you to install AnyDesk so I can process it. Just, um, follow my steps.",1
+"Grandpa, uh, it’s me, I’m in trouble. Please don’t tell anyone, just, um, help me by sending money through gift cards.",1
+"Hi, uh, Binance security, your account is compromised. You need to move your funds now. I’ll give you the address, just, um, transfer everything.",1
+"Hello, uh, bank fraud team, I sent you a code. Please read it back so we can cancel a suspicious charge.",1
+"Uh, Microsoft support, we’re processing a refund. Install remote access software and give me the code.",1
+"Mom, uh, it’s me, I need help urgently. Please go get gift cards and read me the codes.",1
+"Coinbase security, uh, we need your recovery phrase to secure your wallet right now.",1
+"Fraud department, uh, please read back the code I sent to stop the transaction.",1
+"Amazon support, uh, install AnyDesk so I can process your refund.",1
+"Grandma, uh, I need help fast, please send money through gift cards.",1
+"Binance security, uh, transfer your funds now to avoid loss.",1
+"Bank fraud, uh, confirm the code I sent.",1
+"Microsoft support, uh, install remote access software.",1
+"Mom, uh, please help me, I need money fast.",1
+"Coinbase security, uh, read your recovery phrase.",1
+"Fraud alert, uh, read the code now.",1
+"Amazon support, uh, install software for refund.",1
+"Grandpa, uh, send money now please.",1
+"Binance, uh, transfer funds immediately.",1
+"Bank, uh, confirm your code.",1
+"Microsoft, uh, install the app now.",1
+"Uh, hey mom, it’s me, listen, I know this sounds weird, I’m calling from someone else’s phone, okay? I got into, um, a really bad accident and they’re saying I could be charged unless I pay right now. Please don’t call anyone, just, uh, go get Apple gift cards and read me the codes, please hurry.",1
+"Hello, uh, this is Coinbase security, listen carefully, we just saw a login attempt from, um, another country on your account. Your funds could be gone in minutes. I need you to, uh, grab your recovery phrase and read it to me so we can lock everything down right now.",1
+"Hi, yeah, uh, this is your bank’s fraud department, we’re seeing a charge for like, um, seven hundred dollars being processed. I need to stop it immediately. I just sent a six digit code to your phone, uh, can you read that back to me real quick so we can block it?",1
+"Uh, hello, Amazon support here, listen, there’s been a billing error and you were charged twice. We’re issuing a refund but I need to, um, access your computer to process it. Please install AnyDesk and give me the code, I’ll walk you through everything, okay?",1
+"Grandma, uh, it’s me, please don’t panic, okay? I’m in trouble, I got picked up by the police and they’re saying I need bail money like right now. Please don’t tell mom or dad, just, um, go buy gift cards and I’ll tell you what to do, please stay with me.",1
+"Uh hi, this is Binance security team, listen, we’re detecting active withdrawal attempts on your wallet right now. You could lose everything if we don’t act. I need you to, um, transfer your funds to a secure wallet I’ll provide, just do it quickly, okay?",1
+"Hello, uh, I’m calling from your bank, fraud prevention, there’s a suspicious transaction pending right now. I sent you a code, um, can you just read it back to me quickly so I can stop this before it goes through? We don’t have much time here.",1
+"Hi, uh, Microsoft support here, listen, you were mistakenly charged for a subscription. We’re refunding you but I need to, um, connect to your system. Please install AnyDesk and share the code, I’ll process the refund while you watch.",1
+"Mom, uh, listen, it’s me, I’m in trouble, I can’t explain everything right now but I need help fast. They’re asking for money immediately. Please don’t call anyone, just, um, go get Apple gift cards and read me the numbers, please hurry.",1
+"Hello, uh, Coinbase support calling, we detected unusual activity on your account just now. Someone’s trying to withdraw your funds. I need your recovery phrase to verify ownership and secure it. Just, uh, read it slowly so I can lock things down.",1
+"Hi, uh, fraud department here, there’s a charge being processed on your account right now. I sent a verification code to your phone. Please, um, read it back immediately so we can block this before it completes, we’re on a tight window.",1
+"Uh, hello, Amazon billing support, we made an error and overcharged you. I’m here to fix it but I need remote access. Please install AnyDesk and give me the code, um, I’ll handle the refund for you, just stay on the line.",1
+"Grandpa, uh, it’s me, listen, I’m in serious trouble right now. I got arrested and they’re asking for bail money immediately. Please don’t tell anyone else, just, um, go get gift cards and I’ll explain how to send them, please don’t hang up.",1
+"Hi, uh, Binance security here, your account is under attack right now. There are multiple withdrawal requests happening. I need you to move your funds immediately. I’ll give you a secure address, just, um, transfer everything so we can protect it.",1
+"Hello, uh, your bank calling, fraud alert, there’s a charge pending and we need to verify it right now. I sent you a code, um, please read it back so we can cancel this before it goes through, we don’t have much time.",1
+"Uh, hi, Microsoft billing support, we’re processing a refund for a mistaken charge. To complete it, I need access to your computer. Please, um, install the remote software and give me the code so I can proceed.",1
+"Mom, uh, it’s me, please listen, I’m in trouble and I need help right now. I can’t explain fully but they’re asking for money immediately. Please just, um, go get gift cards and read me the codes, don’t tell anyone yet.",1
+"Hello, uh, Coinbase security team, we detected a breach attempt on your wallet. Your funds are at risk right now. I need your recovery phrase so we can secure everything. Just, um, read it carefully to me.",1
+"Hi, uh, fraud department, there’s a suspicious transaction going through. I sent you a code, please, um, read it back immediately so we can stop it before the money leaves your account.",1
+"Uh, hello, Amazon support, we’re issuing a refund due to a billing error. I need you to install AnyDesk so I can process it on your system. Just, um, follow my instructions and we’ll fix this quickly.",1
+"Grandma, uh, it’s me, I’m in trouble, please don’t hang up. I need money fast or things will get worse. Please don’t call anyone else, just, um, go get gift cards and I’ll tell you exactly what to do.",1
+"Hi, uh, Binance support, we’re seeing unauthorized withdrawals on your account. You need to act right now. I’ll give you a secure wallet, just, um, transfer your funds immediately so they’re safe.",1
+"Hello, uh, your bank’s fraud team, there’s a charge being processed. I sent a code to your phone, um, please read it back so we can cancel it before it completes, this is urgent.",1
+"Uh, hi, Microsoft support, we’re refunding you for a billing error. I need remote access to your system. Please, um, install the app and give me the code so I can process it.",1
+"Mom, uh, listen, it’s me, I’m in a bad situation and I need money right now. Please don’t call anyone, just, um, go get Apple gift cards and stay on the phone with me while you do it.",1
+"Uh, hey dad, it’s me, listen, I’m calling from a stranger’s phone, mine’s dead. I, um, I got into a crash and they’re saying the other driver’s hurt. They want money right now or they’ll press charges. Please don’t call mom, just, uh, get Apple gift cards and read me the codes, please.",1
+"Hello, uh, this is Coinbase security, listen, we just flagged a withdrawal attempt from, um, Eastern Europe on your account. It’s happening right now. I need you to verify ownership by reading your recovery phrase so we can lock the wallet before funds are gone, okay?",1
+"Hi, yeah, uh, bank fraud department here, we’re seeing a purchase for like nine hundred dollars going through. I need to cancel it immediately. I just sent a six digit code to your phone, um, can you read it back to me real quick so we can stop this?",1
+"Uh, hello, Amazon billing, listen, you were overcharged on a recent order. We’re issuing a refund but I need to, um, connect to your computer. Please install AnyDesk and give me the code, I’ll process it while you watch so you know it’s done.",1
+"Grandma, uh, it’s me, please don’t panic, okay? I’m at the police station, I got into trouble and they’re asking for bail money right now. Please don’t call anyone, just, um, go buy gift cards and I’ll tell you how to send them, please stay on the line.",1
+"Hi, uh, Binance security team, listen carefully, we’re detecting multiple withdrawal requests on your wallet. This is active right now. I need you to, um, transfer your funds to a secure address I provide so we can protect everything before it’s gone.",1
+"Hello, uh, I’m calling from your bank, fraud prevention, there’s a suspicious transfer pending. I sent you a code, um, please read it back so I can cancel it immediately, otherwise it’s going to be approved automatically.",1
+"Hi, uh, Microsoft support here, you were charged for a subscription you didn’t use. We’re issuing a refund but I need to, um, access your computer. Please install AnyDesk and share the code so I can complete the process.",1
+"Mom, uh, listen, it’s me, I’m in trouble and I need help fast. I can’t explain everything right now but they’re asking for money immediately. Please don’t call anyone, just, um, get Apple gift cards and read me the codes, please hurry.",1
+"Hello, uh, Coinbase support calling, we detected unusual activity just now. Someone is trying to move your funds. I need your recovery phrase to verify ownership and secure the wallet. Just, uh, read it slowly so I can lock it down.",1
+"Hi, uh, fraud department here, there’s a transaction being processed right now on your account. I sent a verification code to your phone. Please, um, read it back immediately so we can block it before it completes.",1
+"Uh, hello, Amazon support, we made a billing mistake and charged you twice. I’m here to fix it but I need remote access. Please install AnyDesk and give me the code, um, I’ll handle the refund right away.",1
+"Grandpa, uh, it’s me, listen, I’m in serious trouble right now. I got arrested and they’re asking for money immediately. Please don’t tell anyone else, just, um, go get gift cards and I’ll explain what to do, please don’t hang up.",1
+"Hi, uh, Binance security here, your wallet is currently under attack. There are withdrawal attempts happening. I need you to move your funds immediately. I’ll give you a secure address, just, um, transfer everything right now.",1
+"Hello, uh, your bank calling, fraud alert, there’s a charge pending and we need to verify it immediately. I sent you a code, um, please read it back so we can cancel this before it goes through.",1
+"Uh, hi, Microsoft billing support, we’re processing a refund for you. To complete it, I need access to your computer. Please, um, install the remote software and give me the code so I can proceed.",1
+"Mom, uh, it’s me, please listen, I’m in trouble and I need help right now. I can’t explain fully but they’re asking for money immediately. Please just, um, go get gift cards and read me the codes, don’t tell anyone.",1
+"Hello, uh, Coinbase security team, we detected a breach attempt on your account. Your funds are at risk. I need your recovery phrase so we can secure everything. Just, um, read it carefully to me now.",1
+"Hi, uh, fraud department, there’s a suspicious charge going through. I sent you a code, please, um, read it back immediately so we can stop it before the money leaves your account.",1
+"Uh, hello, Amazon support, we’re issuing a refund due to a billing error. I need you to install AnyDesk so I can process it on your system. Just, um, follow my instructions and we’ll fix this quickly.",1
+"Grandma, uh, it’s me, I’m in trouble, please don’t hang up. I need money fast or things will get worse. Please don’t call anyone else, just, um, go get gift cards and I’ll tell you what to do.",1
+"Hi, uh, Binance support, we’re seeing unauthorized withdrawals on your account. You need to act now. I’ll give you a secure wallet, just, um, transfer your funds immediately so they’re safe.",1
+"Hello, uh, your bank’s fraud team, there’s a charge being processed. I sent a code to your phone, um, please read it back so we can cancel it before it completes.",1
+"Uh, hi, Microsoft support, we’re refunding you for a billing error. I need remote access to your system. Please, um, install the app and give me the code so I can process it.",1
+"Mom, uh, listen, it’s me, I’m in a bad situation and I need money right now. Please don’t call anyone, just, um, go get Apple gift cards and stay on the phone with me.",1
+"Hello, uh, Coinbase support, there’s suspicious activity on your wallet. I need your recovery phrase to secure your account. Please, um, read it to me now so we can protect your funds.",1
+"Hi, uh, fraud department, a transaction is pending. I sent you a code, please, um, read it back so we can stop it immediately before it’s approved.",1
+"Uh, hello, Amazon support, we’re issuing a refund. I need you to install AnyDesk so I can process it. Just, um, follow my steps and we’ll complete it quickly.",1
+"Grandpa, uh, it’s me, I’m in trouble. Please don’t tell anyone, just, um, help me by sending money through gift cards right now, I really need this.",1
+"Hi, uh, Binance security, your account is compromised. You need to move your funds now. I’ll give you the address, just, um, transfer everything before it’s too late.",1
+"Uh, hey mom, it’s me, listen, I’m using a different phone, okay? I, um, got into a car accident and they’re saying I could get arrested if I don’t pay right now. Please don’t call anyone, just, uh, go get Apple gift cards and read me the codes, please hurry.",1
+"Hello, uh, this is Coinbase security, listen carefully, we just detected a login from, um, another country. Your funds are at risk right now. I need you to, uh, grab your recovery phrase and read it to me so we can secure your wallet immediately.",1
+"Hi, yeah, uh, this is your bank’s fraud department, we’re seeing a charge for like, um, eight hundred dollars being processed. I need to stop it now. I just sent a six digit code to your phone, uh, read it back quickly so we can block it.",1
+"Uh, hello, Amazon support here, listen, there’s been a billing error and you were charged twice. We’re issuing a refund but I need to, um, access your computer. Please install AnyDesk and give me the code so I can process it.",1
+"Grandma, uh, it’s me, please don’t panic, okay? I’m in trouble, I got picked up and they’re asking for bail money right now. Please don’t tell anyone, just, um, go buy gift cards and I’ll tell you what to do.",1
+"Hi, uh, Binance security team, listen, we’re detecting withdrawal attempts on your wallet right now. You could lose everything. I need you to, um, transfer your funds to a secure wallet I provide, do it quickly, okay?",1
+"Hello, uh, I’m calling from your bank, fraud prevention, there’s a suspicious transaction pending. I sent you a code, um, can you read it back so I can stop this before it goes through?",1
+"Hi, uh, Microsoft support here, you were charged for a subscription you didn’t use. We’re refunding you but I need to, um, connect to your system. Please install AnyDesk and share the code.",1
+"Mom, uh, listen, it’s me, I’m in trouble and I need help fast. I can’t explain everything right now but they’re asking for money. Please don’t call anyone, just, um, get Apple gift cards and read me the codes.",1
+"Hello, uh, Coinbase support calling, we detected unusual activity on your account. Someone is trying to withdraw your funds. I need your recovery phrase to verify ownership and secure it, just read it slowly.",1
+"Hi, uh, fraud department here, there’s a charge being processed right now. I sent a verification code to your phone. Please, um, read it back immediately so we can block it before it completes.",1
+"Uh, hello, Amazon billing support, we made an error and charged you twice. I need remote access to fix it. Please install AnyDesk and give me the code, I’ll handle the refund for you.",1
+"Grandpa, uh, it’s me, listen, I’m in serious trouble right now. I got arrested and they’re asking for money immediately. Please don’t tell anyone, just, um, go get gift cards and I’ll explain what to do.",1
+"Hi, uh, Binance security here, your wallet is under attack. There are withdrawal attempts happening. I need you to move your funds immediately. I’ll give you a secure address, just transfer everything now.",1
+"Hello, uh, your bank calling, fraud alert, there’s a charge pending. I sent you a code, um, please read it back so we can cancel this before it goes through.",1
+"Uh, hi, Microsoft billing support, we’re processing a refund. To complete it, I need access to your computer. Please install the remote software and give me the code.",1
+"Mom, uh, it’s me, please listen, I’m in trouble and I need help right now. They’re asking for money immediately. Please just, um, go get gift cards and read me the codes, don’t tell anyone.",1
+"Hello, uh, Coinbase security team, we detected a breach attempt on your account. Your funds are at risk. I need your recovery phrase so we can secure everything, just read it carefully.",1
+"Hi, uh, fraud department, there’s a suspicious charge going through. I sent you a code, please, um, read it back immediately so we can stop it.",1
+"Uh, hello, Amazon support, we’re issuing a refund due to a billing error. I need you to install AnyDesk so I can process it on your system, just follow my instructions.",1
+"Grandma, uh, it’s me, I’m in trouble, please don’t hang up. I need money fast. Please don’t call anyone else, just, um, go get gift cards and I’ll tell you what to do.",1
+"Hi, uh, Binance support, we’re seeing unauthorized withdrawals. You need to act now. I’ll give you a secure wallet, just, um, transfer your funds immediately.",1
+"Hello, uh, your bank’s fraud team, there’s a charge being processed. I sent a code, um, please read it back so we can cancel it before it completes.",1
+"Uh, hi, Microsoft support, we’re refunding you for a billing error. I need remote access to your system. Please install the app and give me the code.",1
+"Mom, uh, listen, it’s me, I’m in a bad situation and I need money right now. Please don’t call anyone, just, um, go get Apple gift cards and stay on the phone.",1
+"Hello, uh, Coinbase support, there’s suspicious activity on your wallet. I need your recovery phrase to secure your account, please read it now.",1
+"Hi, uh, fraud department, a transaction is pending. I sent you a code, please, um, read it back so we can stop it immediately.",1
+"Uh, hello, Amazon support, we’re issuing a refund. I need you to install AnyDesk so I can process it, just follow my steps.",1
+"Grandpa, uh, it’s me, I’m in trouble. Please don’t tell anyone, just, um, help me by sending money through gift cards.",1
+"Hi, uh, Binance security, your account is compromised. You need to move your funds now. I’ll give you the address, just transfer everything.",1
+"Hello, uh, bank fraud team, I sent you a code. Please read it back so we can cancel a suspicious charge.",1
+"Uh, Microsoft support, we’re processing a refund. Install remote access software and give me the code.",1
+"Mom, uh, it’s me, I need help urgently. Please go get gift cards and read me the codes.",1
+"Coinbase security, uh, we need your recovery phrase to secure your wallet right now.",1
+"Fraud department, uh, please read back the code I sent to stop the transaction.",1
+"Amazon support, uh, install AnyDesk so I can process your refund.",1
+"Grandma, uh, I need help fast, please send money through gift cards.",1
+"Binance security, uh, transfer your funds now to avoid loss.",1
+"Bank fraud, uh, confirm the code I sent.",1
+"Microsoft support, uh, install remote access software.",1
+"Mom, uh, please help me, I need money fast.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom, hey, it's me, um, I'm in trouble with the law, got pulled over for a minor violation, uh, the officer wants cash to avoid a ticket, please, just wire me $350?",1
+"Uh, Coinbase security alert, your wallet's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows support, your system license is expiring, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your Windows?",1
+"Hey grandma, it's Ryan, um, I'm in the hospital after a minor accident, uh, they need money for treatment, please, just send Apple gift cards, don't worry mom and dad yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $300, can you, like, send the difference back via Zelle?",1
+"Mom? Hey, it's me, um, I'm stranded in another state, car broke down, uh, I need money for repairs and a hotel, please, just wire me $450, I'll explain everything later.",1
+"Uh, Coinbase, uh, your account's been targeted by a sophisticated phishing campaign, um, to recover your assets, you need to, like, provide your seed phrase for wallet restoration immediately.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $999, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey, it's your son, um, I got arrested for a minor offense at a party, uh, they need bail money wired, please, just $400 in Apple gift cards, don't tell mom and dad yet.",1
+"Uh, Binance security, we see unauthorized API activity on your account, um, to prevent fund drainage, you need to, like, transfer your crypto to this secure multi-sig address immediately.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Microsoft tech support, your computer's infected with ransomware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom, hey, it's me, um, I'm stuck at the airport, missed my flight, uh, I need money for a new ticket and hotel, please, just send Apple gift cards, I'm really stressed.",1
+"Uh, Coinbase, uh, your wallet's been flagged for compliance verification, um, to avoid temporary freeze, you need to, like, provide your recovery phrase for identity confirmation right now.",1
+"Listen, this is US Bank fraud team, uh, we detected a password change request from an unknown device, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $600 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey grandma, it's Olivia, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $450 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, your account's been compromised by a credential stuffing attack, um, to secure your funds, you need to, like, share your two-factor code to reset your security immediately.",1
+"Hello, this is Chase fraud department, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom? Hey, it's me, um, I'm in trouble at work, got into an argument, uh, they're demanding payment for damages, please, just send Apple gift cards, don't tell dad yet.",1
+"Uh, Coinbase security alert, your account's been accessed from multiple suspicious locations, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $1099, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey, it's your grandson, um, I got arrested for a minor traffic violation, uh, they need cash for bail, please, just wire me $350 in Apple gift cards, don't tell grandma and grandpa.",1
+"Uh, Binance, uh, we detected unusual withdrawal patterns on your account, um, to prevent unauthorized transfers, you need to, like, transfer your assets to this verified secure wallet address now.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom, hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $600, I'll pay you back.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $700 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey grandma, it's Ethan, um, I'm in the hospital after a sports injury, uh, they need money for emergency treatment, please, just send Apple gift cards, don't worry the family yet.",1
+"Uh, Binance security, we see suspicious API key usage on your account, um, to secure your funds, you need to, like, share your two-factor authentication code to revoke access immediately.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom? Hey, it's me, um, I'm stranded in another city, car broke down, uh, I need money for repairs and a hotel, please, just wire me $500, I'll explain everything later.",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows activation, your license key is expiring soon, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your system?",1
+"Hey, it's your daughter, um, I got stranded after a concert, lost my phone and wallet, uh, I need money for a ride home and hotel, please, just send Apple gift cards, I'm really scared.",1
+"Uh, Binance, uh, your API keys were compromised in a third-party breach, um, to secure your assets, you need to, like, transfer all crypto to this verified secure wallet address now.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $400, can you, like, send the difference back via Zelle or Cash App?",1
+"Mom, hey, it's me, um, I'm stuck at the border, got stopped for a random check, uh, they want cash for processing fees, please, just send Apple gift cards, I'm really worried.",1
+"Uh, Coinbase security alert, your account's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $1199, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey grandma, it's Sophia, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $500 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Microsoft tech support, your computer's infected with spyware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom? Hey, it's me, um, I'm in trouble with the law, got pulled over for speeding, uh, the officer wants cash to avoid a ticket, please, just wire me $400?",1
+"Uh, Coinbase, uh, your account's been targeted by a sophisticated phishing campaign, um, to recover your assets, you need to, like, provide your seed phrase for wallet restoration immediately.",1
+"Listen, this is US Bank fraud team, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $800 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey, it's your son, um, I got arrested for a minor offense at a party, uh, they need bail money wired, please, just $450 in Apple gift cards, don't tell mom and dad yet.",1
+"Uh, Binance security, we see unauthorized API activity on your account, um, to prevent fund drainage, you need to, like, transfer your crypto to this secure multi-sig address immediately.",1
+"Hello, this is Chase fraud department, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom, hey, it's me, um, I'm stranded in another state, car broke down, uh, I need money for repairs and a hotel, please, just send Apple gift cards, I'll explain everything later.",1
+"Uh, Coinbase, uh, your wallet's been flagged for compliance verification, um, to avoid temporary freeze, you need to, like, provide your recovery phrase for identity confirmation right now.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $1299, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey grandma, it's Noah, um, I'm in the hospital after a minor accident, uh, they need money for treatment, please, just wire me $550, don't worry mom and dad yet.",1
+"Uh, Binance, uh, your account's been compromised by a credential stuffing attack, um, to secure your funds, you need to, like, share your two-factor code to reset your security immediately.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom? Hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $650, I'll pay you back.",1
+"Uh, Coinbase security alert, your account's been accessed from multiple suspicious locations, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $900 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey, it's your grandson, um, I got arrested for a minor traffic violation, uh, they need cash for bail, please, just send Apple gift cards, don't tell grandma and grandpa.",1
+"Uh, Binance, uh, we detected unusual withdrawal patterns on your account, um, to prevent unauthorized transfers, you need to, like, transfer your assets to this verified secure wallet address now.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom, hey, it's me, um, I'm stuck at the airport, missed my flight, uh, I need money for a new ticket and hotel, please, just wire me $500, I'll explain everything later.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows support, your system license is expiring, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your Windows?",1
+"Hey grandma, it's Ava, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $550 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance security, we see suspicious API key usage on your account, um, to secure your funds, you need to, like, share your two-factor authentication code to revoke access immediately.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $500, can you, like, send the difference back via Zelle?",1
+"Mom? Hey, it's me, um, I'm stranded in another city, car broke down, uh, I need money for repairs and a hotel, please, just send Apple gift cards, I'll explain everything later.",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $1399, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey, it's your daughter, um, I got stranded after a concert, lost my phone and wallet, uh, I need money for a ride home and hotel, please, just wire me $450, I'm really scared.",1
+"Uh, Binance, uh, your API keys were compromised in a third-party breach, um, to secure your assets, you need to, like, transfer all crypto to this verified secure wallet address now.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Microsoft tech support, your computer's infected with ransomware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom, hey, it's me, um, I'm in trouble with the law, got pulled over for a minor violation, uh, the officer wants cash to avoid a ticket, please, just send Apple gift cards?",1
+"Uh, Coinbase security alert, your account's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is US Bank fraud team, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $1000 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey grandma, it's Liam, um, I'm in the hospital after a sports injury, uh, they need money for emergency treatment, please, just wire me $600, don't worry the family yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is Chase fraud department, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom? Hey, it's me, um, I'm stuck at the border, got stopped for a random check, uh, they want cash for processing fees, please, just send Apple gift cards, I'm really worried.",1
+"Uh, Coinbase, uh, your account's been targeted by a sophisticated phishing campaign, um, to recover your assets, you need to, like, provide your seed phrase for wallet restoration immediately.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $1499, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey, it's your son, um, I got arrested for a minor offense at a party, uh, they need bail money wired, please, just $500 in Apple gift cards, don't tell mom and dad yet.",1
+"Uh, Binance security, we see unauthorized API activity on your account, um, to prevent fund drainage, you need to, like, transfer your crypto to this secure multi-sig address immediately.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom, hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $700, I'll pay you back.",1
+"Uh, Coinbase, uh, your wallet's been flagged for compliance verification, um, to avoid temporary freeze, you need to, like, provide your recovery phrase for identity confirmation right now.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $1100 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey grandma, it's Emma, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $600 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, your account's been compromised by a credential stuffing attack, um, to secure your funds, you need to, like, share your two-factor code to reset your security immediately.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom? Hey, it's me, um, I'm stranded in another state, car broke down, uh, I need money for repairs and a hotel, please, just send Apple gift cards, I'll explain everything later.",1
+"Uh, Coinbase security alert, your account's been accessed from multiple suspicious locations, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows activation, your license key is expiring soon, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your system?",1
+"Hey, it's your grandson, um, I got arrested for a minor traffic violation, uh, they need cash for bail, please, just wire me $400 in Apple gift cards, don't tell grandma and grandpa.",1
+"Uh, Binance, uh, we detected unusual withdrawal patterns on your account, um, to prevent unauthorized transfers, you need to, like, transfer your assets to this verified secure wallet address now.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $600, can you, like, send the difference back via Zelle or Cash App?",1
+"Mom, hey, it's me, um, I'm stuck at the airport, missed my flight, uh, I need money for a new ticket and hotel, please, just send Apple gift cards, I'm really stressed.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $1599, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey grandma, it's Mason, um, I'm in the hospital after a minor accident, uh, they need money for treatment, please, just wire me $650, don't worry mom and dad yet.",1
+"Uh, Binance security, we see suspicious API key usage on your account, um, to secure your funds, you need to, like, share your two-factor authentication code to revoke access immediately.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Microsoft tech support, your computer's infected with spyware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom? Hey, it's me, um, I'm in trouble with the law, got pulled over for speeding, uh, the officer wants cash to avoid a ticket, please, just wire me $450?",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is US Bank fraud team, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $1200 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey, it's your daughter, um, I got stranded after a concert, lost my phone and wallet, uh, I need money for a ride home and hotel, please, just send Apple gift cards, I'm really scared.",1
+"Uh, Binance, uh, your API keys were compromised in a third-party breach, um, to secure your assets, you need to, like, transfer all crypto to this verified secure wallet address now.",1
+"Hello, this is Chase fraud department, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom, hey, it's me, um, I'm stranded in another city, car broke down, uh, I need money for repairs and a hotel, please, just wire me $550, I'll explain everything later.",1
+"Uh, Coinbase security alert, your account's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $1699, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey grandma, it's Isabella, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $650 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom? Hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $750, I'll pay you back.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $1300 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey, it's your son, um, I got arrested for a minor offense at a party, uh, they need bail money wired, please, just $550 in Apple gift cards, don't tell mom and dad yet.",1
+"Uh, Binance security, we see unauthorized API activity on your account, um, to prevent fund drainage, you need to, like, transfer your crypto to this secure multi-sig address immediately.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom, hey, it's me, um, I'm stuck at the border, got stopped for a random check, uh, they want cash for processing fees, please, just send Apple gift cards, I'm really worried.",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows support, your system license is expiring, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your Windows?",1
+"Hey grandma, it's James, um, I'm in the hospital after a sports injury, uh, they need money for emergency treatment, please, just wire me $700, don't worry the family yet.",1
+"Uh, Binance, uh, your account's been compromised by a credential stuffing attack, um, to secure your funds, you need to, like, share your two-factor code to reset your security immediately.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $700, can you, like, send the difference back via Zelle?",1
+"Mom? Hey, it's me, um, I'm stranded in another state, car broke down, uh, I need money for repairs and a hotel, please, just send Apple gift cards, I'll explain everything later.",1
+"Uh, Coinbase security alert, your account's been accessed from multiple suspicious locations, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $1799, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey, it's your grandson, um, I got arrested for a minor traffic violation, uh, they need cash for bail, please, just wire me $450 in Apple gift cards, don't tell grandma and grandpa.",1
+"Uh, Binance, uh, we detected unusual withdrawal patterns on your account, um, to prevent unauthorized transfers, you need to, like, transfer your assets to this verified secure wallet address now.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Microsoft tech support, your computer's infected with ransomware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom, hey, it's me, um, I'm in trouble with the law, got pulled over for a minor violation, uh, the officer wants cash to avoid a ticket, please, just wire me $500?",1
+"Uh, Coinbase, uh, your account's been targeted by a sophisticated phishing campaign, um, to recover your assets, you need to, like, provide your seed phrase for wallet restoration immediately.",1
+"Listen, this is US Bank fraud team, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $1400 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey grandma, it's Charlotte, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $700 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance security, we see suspicious API key usage on your account, um, to secure your funds, you need to, like, share your two-factor authentication code to revoke access immediately.",1
+"Hello, this is Chase fraud department, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom? Hey, it's me, um, I'm stuck at the airport, missed my flight, uh, I need money for a new ticket and hotel, please, just send Apple gift cards, I'm really stressed.",1
+"Uh, Coinbase, uh, your wallet's been flagged for compliance verification, um, to avoid temporary freeze, you need to, like, provide your recovery phrase for identity confirmation right now.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $1899, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey, it's your daughter, um, I got stranded after a concert, lost my phone and wallet, uh, I need money for a ride home and hotel, please, just wire me $500, I'm really scared.",1
+"Uh, Binance, uh, your API keys were compromised in a third-party breach, um, to secure your assets, you need to, like, transfer all crypto to this verified secure wallet address now.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom, hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $800, I'll pay you back.",1
+"Uh, Coinbase security alert, your account's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $1500 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey grandma, it's Benjamin, um, I'm in the hospital after a minor accident, uh, they need money for treatment, please, just wire me $750, don't worry mom and dad yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom? Hey, it's me, um, I'm stranded in another city, car broke down, uh, I need money for repairs and a hotel, please, just send Apple gift cards, I'll explain everything later.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows activation, your license key is expiring soon, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your system?",1
+"Hey, it's your son, um, I got arrested for a minor offense at a party, uh, they need bail money wired, please, just $600 in Apple gift cards, don't tell mom and dad yet.",1
+"Uh, Binance security, we see unauthorized API activity on your account, um, to prevent fund drainage, you need to, like, transfer your crypto to this secure multi-sig address immediately.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Um, hi, Amazon customer care, we're processing a refund for your cancelled order, but, uh, we accidentally over-refunded by $800, can you, like, send the difference back via Zelle or Cash App?",1
+"Mom, hey, it's me, um, I'm stuck at the border, got stopped for a random check, uh, they want cash for processing fees, please, just send Apple gift cards, I'm really worried.",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is Bank of America security team, uh, we detected a login attempt from a high-risk location, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad subscription services, your annual plan renewed for $1999, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your computer?",1
+"Hey grandma, it's Amelia, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $750 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, your account's been compromised by a credential stuffing attack, um, to secure your funds, you need to, like, share your two-factor code to reset your security immediately.",1
+"Hello, this is Citibank fraud prevention, uh, someone's trying to wire money to a new international beneficiary, can you, um, read back the OTP to block this unauthorized transaction?",1
+"Um, hi, Microsoft tech support, your computer's infected with spyware, uh, we can remove it remotely if you, like, install TeamViewer and give me the access code to run diagnostics?",1
+"Mom? Hey, it's me, um, I'm in trouble with the law, got pulled over for speeding, uh, the officer wants cash to avoid a ticket, please, just wire me $550?",1
+"Uh, Coinbase security alert, your account's been accessed from multiple suspicious locations, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is US Bank fraud team, uh, we see a large purchase attempt at an electronics retailer, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Amazon refunds team, we're issuing a $1600 credit for your billing system error, but, uh, we need your, like, bank account and routing number to process the refund transfer?",1
+"Hey, it's your grandson, um, I got arrested for a minor traffic violation, uh, they need cash for bail, please, just send Apple gift cards, don't tell grandma and grandpa.",1
+"Uh, Binance, uh, we detected unusual withdrawal patterns on your account, um, to prevent unauthorized transfers, you need to, like, transfer your assets to this verified secure wallet address now.",1
+"Hello, this is Chase fraud department, uh, someone's trying to add a new authorized user to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple support services, we detected suspicious activity on your Apple ID, uh, to protect your account, can you, like, share the verification code we just texted to your phone?",1
+"Mom, hey, it's me, um, I'm stranded in another state, car broke down, uh, I need money for repairs and a hotel, please, just wire me $600, I'll explain everything later.",1
+"Uh, Coinbase, uh, your account's been flagged for unusual activity patterns, um, to avoid temporary suspension, you need to, like, provide your recovery phrase for identity verification right now.",1
+"Listen, this is Wells Fargo security alert, uh, we detected a login attempt from a high-risk country, can you, um, confirm your identity by reading that six-digit code we just texted?",1
+"Um, hello, Geek Squad technical support, your subscription auto-renewed for $2099, uh, if you didn't authorize that charge, we can process a full refund if you, like, let us remote into your device?",1
+"Hey grandma, it's Lucas, um, I'm in the hospital after a sports injury, uh, they need money for emergency treatment, please, just wire me $800, don't worry the family yet.",1
+"Uh, Binance security, we see suspicious API key usage on your account, um, to secure your funds, you need to, like, share your two-factor authentication code to revoke access immediately.",1
+"Hello, this is Bank of America fraud prevention, uh, someone's trying to initiate a wire transfer to an unknown account, can you, um, read back the OTP to block this fraudulent attempt?",1
+"Um, hi, Microsoft support team, your computer's sending critical security alerts, uh, we can diagnose and fix the issues remotely if you, like, install TeamViewer and share the access code?",1
+"Mom? Hey, it's me, um, I'm in a difficult situation overseas, lost my wallet and phone, uh, I need money for emergency travel docs, please, just wire me $850, I'll pay you back.",1
+"Uh, Coinbase, uh, your wallet's been targeted by a coordinated attack, um, to protect your crypto holdings, you need to, like, move everything to this secure multi-signature address we're providing.",1
+"Listen, this is Citibank fraud team, uh, we detected a password reset request from a suspicious IP, can you, um, verify it's you by reading that six-digit code we just sent to your phone?",1
+"Um, hello, Amazon refunds department, we're issuing a $1700 credit for your subscription billing error, but, uh, we need your, like, bank account details to process the refund transfer immediately?",1
+"Hey, it's your daughter, um, I got stranded after a concert, lost my phone and wallet, uh, I need money for a ride home and hotel, please, just send Apple gift cards, I'm really scared.",1
+"Uh, Binance, uh, your API keys were compromised in a third-party breach, um, to secure your assets, you need to, like, transfer all crypto to this verified secure wallet address now.",1
+"Hello, this is US Bank security department, uh, someone's trying to add a new payee to your account, can you, um, read back the verification code to approve or deny this change?",1
+"Um, hi, Apple iCloud support, we detected multiple unauthorized login attempts, uh, to protect your account, can you, like, share the two-factor code we just texted to your trusted device?",1
+"Mom, hey, it's me, um, I'm stuck at the airport, missed my flight, uh, I need money for a new ticket and hotel, please, just wire me $650, I'll explain everything later.",1
+"Uh, Coinbase security alert, your account's been accessed from an unrecognized location, um, to lock it down, you need to, like, provide your seed phrase for immediate security reset.",1
+"Listen, this is Chase Bank fraud alert, uh, we see a large purchase attempt at a jewelry store, can you, um, verify it's you by reading that six-digit code we just sent?",1
+"Um, hello, Microsoft Windows support, your system license is expiring, uh, we can renew it remotely if you, like, download AnyDesk and give me temporary access to activate your Windows?",1
+"Hey grandma, it's Mia, um, I'm at the police station after a minor incident, uh, they need bail money wired, please, just $800 in Apple gift cards, don't tell the family yet.",1
+"Uh, Binance, uh, we detected suspicious login activity from multiple countries, um, to secure your account, you need to, like, share your two-factor authentication code right now.",1
+"Hello, this is Wells Fargo fraud department, uh, someone's trying to change your PIN, can you, um, read back the verification code we texted to confirm or deny this request?",1
+"Uh, hey mom, listen, it’s me, I’m using a different phone, okay? I, um, got into trouble and I need money right now. Please don’t call anyone, just, uh, go get Apple gift cards and read me the codes, please hurry.",1
+"Hello, uh, Coinbase security here, we just saw a login from, um, another country on your account. Your funds are at risk. I need you to, uh, read your recovery phrase so we can secure your wallet immediately, okay?",1
+"Hi, yeah, uh, this is your bank’s fraud department, we’re seeing a suspicious charge right now. I sent a six digit code to your phone, um, please read it back quickly so we can stop the transaction.",1
+"Uh, hello, Amazon support, listen, you were overcharged and we need to issue a refund. I need you to, um, install AnyDesk so I can access your system and process it, just follow my instructions.",1
+"Grandma, uh, it’s me, please don’t panic, I’m in trouble and I need help fast. Please don’t tell anyone, just, um, go get gift cards and I’ll tell you what to do, okay?",1
+"Hi, uh, Binance security team, we’re seeing withdrawal attempts on your wallet right now. You need to act fast. I’ll give you a secure address, just, um, transfer your funds immediately.",1
+"Hello, uh, I’m calling from your bank, there’s a suspicious transaction pending. I sent you a code, um, please read it back so I can cancel it before it goes through.",1
+"Hi, uh, Microsoft support, you were charged by mistake. We’re issuing a refund but I need to, um, access your computer. Please install AnyDesk and give me the code.",1
+"Mom, uh, listen, it’s me, I’m in trouble and I need money now. Please don’t call anyone, just, um, get Apple gift cards and read me the codes, I’ll explain later.",1
+"Hello, uh, Coinbase support, we detected unusual activity on your account. Someone is trying to withdraw your funds. I need your recovery phrase to secure it, please read it now.",1
+"Hi, uh, fraud department, there’s a charge being processed right now. I sent a code, please, um, read it back immediately so we can stop it.",1
+"Uh, hello, Amazon billing, we charged you twice and need to fix it. Please install AnyDesk so I can process your refund, just share the code with me.",1
+"Grandpa, uh, it’s me, I’m in trouble and I need help fast. Please don’t tell anyone, just, um, go get gift cards and stay on the phone with me.",1
+"Hi, uh, Binance support, your account is compromised. You need to move your funds now. I’ll give you a secure wallet, just, um, transfer everything.",1
+"Hello, uh, your bank here, fraud alert, I sent you a code. Please read it back so we can cancel a suspicious charge right now.",1
+"Uh, hi, Microsoft support, we’re processing a refund. I need remote access to your system. Please install the app and give me the code.",1
+"Mom, uh, it’s me, I’m in trouble and I need money urgently. Please don’t call anyone, just, um, go get gift cards and read me the numbers.",1
+"Hello, uh, Coinbase security, there’s a breach attempt on your account. I need your recovery phrase so we can secure your wallet, please read it now.",1
+"Hi, uh, fraud department, a transaction is pending. I sent a code, please, um, read it back so we can stop it immediately.",1
+"Uh, hello, Amazon support, we’re issuing a refund but need access to your system. Please install AnyDesk and share the code so I can proceed.",1
+"Grandma, uh, it’s me, I’m in trouble, please don’t hang up. I need money fast, just, um, go get gift cards and I’ll explain what to do.",1
+"Hi, uh, Binance security, there are withdrawal attempts on your account. You need to act now. I’ll give you an address, just transfer your funds.",1
+"Hello, uh, your bank’s fraud team, there’s a charge pending. I sent you a code, um, please read it back so we can cancel it.",1
+"Uh, hi, Microsoft support, we’re refunding you for a billing error. I need remote access, please install the software and give me the code.",1
+"Mom, uh, listen, it’s me, I’m in a bad situation and I need money now. Please don’t call anyone, just, um, get gift cards and stay on the phone.",1
+"Hello, uh, Coinbase support, your wallet shows suspicious activity. I need your recovery phrase to secure it, please read it now.",1
+"Hi, uh, fraud department, a charge is being processed. I sent you a code, please, um, read it back immediately.",1
+"Uh, hello, Amazon support, we’re issuing a refund. I need you to install AnyDesk so I can process it, just follow my steps.",1
+"Grandpa, uh, it’s me, I’m in trouble. Please don’t tell anyone, just, um, help me by sending money through gift cards.",1
+"Hi, uh, Binance support, your account is compromised. You need to move funds now. I’ll give you a secure address, just transfer everything.",1
