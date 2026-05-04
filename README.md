@@ -454,3 +454,4 @@ The evaluator generates trial scores, summary metrics, and threshold recommendat
 - Live IEP2 requires `faster-whisper` to be installed in the backend environment.
 - `start_services.ps1` may need path cleanup before it is reliable across machines.
 - Production deployment still needs real auth, encrypted profile storage, secret management, hardened CI/CD approvals, and monitoring alerts.
+- The IEP1 acoustic auditor can occasionally produce false positives (flagging real human speech as synthetic) due to microphone hardware variations, network audio compression, or environmental background noise in the live recording.
