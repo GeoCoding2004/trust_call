@@ -19,6 +19,10 @@ Current public EEP deployment:
 - Prometheus URL: `http://35.189.221.158:9090`
 - Mobile app default backend: the public VM EEP URL above.
 
+## Reviewer Access
+
+No API keys are required to test the demo. The deployed backend is publicly accessible, and the mobile app is configured to call the deployed GCP VM backend by default. Full setup and testing instructions are provided in this README.
+
 ## Architecture
 
 ```text
