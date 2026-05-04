@@ -7,6 +7,7 @@ from collections import defaultdict, deque
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
+from typing import Awaitable
 from uuid import uuid4
 
 # Keep model downloads inside the project instead of the Windows user cache,
@@ -59,7 +60,7 @@ WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
 SIGNAL_MIN_RMS = float(os.getenv("TRUST_CALL_SIGNAL_MIN_RMS", "0.0025"))
 SIGNAL_MIN_PEAK = float(os.getenv("TRUST_CALL_SIGNAL_MIN_PEAK", "0.02"))
 SIGNAL_MIN_ACTIVE_RATIO = float(os.getenv("TRUST_CALL_SIGNAL_MIN_ACTIVE_RATIO", "0.015"))
-SEMANTIC_MIN_CONTEXT_SECONDS = float(os.getenv("TRUST_CALL_SEMANTIC_CONTEXT_SECONDS", "8.0"))
+SEMANTIC_MIN_CONTEXT_SECONDS = float(os.getenv("TRUST_CALL_SEMANTIC_CONTEXT_SECONDS", "4.5"))
 SEMANTIC_MAX_CONTEXT_SECONDS = float(os.getenv("TRUST_CALL_SEMANTIC_MAX_CONTEXT_SECONDS", "12.0"))
 SEMANTIC_MIN_CHARS = int(os.getenv("TRUST_CALL_SEMANTIC_MIN_CHARS", "20"))
 
@@ -404,6 +405,20 @@ class LiveIdentityMonitor:
         session["last_fusion_status"] = fusion_status
         metrics.inc("trust_call_gateway_fusion_results_total", status=fusion_status)
         session["state"] = "telemetry_broadcast"
+        session["last_updated_at_utc"] = _utc_now()
+
+    def record_signal_result(
+        self,
+        session_id: str,
+        signal_score: str,
+        is_threat: bool,
+    ) -> None:
+        session = self._sessions.get(session_id)
+        if session is None:
+            return
+        session["last_signal_score"] = signal_score
+        session["last_signal_threat"] = bool(is_threat)
+        session["state"] = "signal_broadcast"
         session["last_updated_at_utc"] = _utc_now()
 
     def record_error(self, session_id: str, error: str) -> None:
@@ -786,6 +801,30 @@ def build_fusion_status(
     return "SAFE", False
 
 
+def format_signal_score(synthetic_score: float, signal_quality: dict) -> str:
+    if not signal_quality.get("usable", True):
+        return "Need clearer speech"
+    real_score = max(0.0, 100.0 - synthetic_score)
+    return (
+        f"{synthetic_score:.2f}% AI (Deepfake)"
+        if synthetic_score > 50.0
+        else f"{real_score:.2f}% Human"
+    )
+
+
+async def publish_signal_when_ready(
+    rawnet_task: Awaitable[float],
+    session_id: str,
+    signal_quality: dict,
+) -> None:
+    synthetic_score = await rawnet_task
+    live_identity_monitor.record_signal_result(
+        session_id=session_id,
+        signal_score=format_signal_score(synthetic_score, signal_quality),
+        is_threat=synthetic_score > 50.0,
+    )
+
+
 async def orchestrate_late_fusion(
     base64_audio: str,
     text_context: str,
@@ -793,9 +832,10 @@ async def orchestrate_late_fusion(
     session_id: str,
     signal_quality: dict | None = None,
     semantic_context_seconds: float = 0.0,
+    rawnet_task: Awaitable[float] | None = None,
 ) -> None:
     signal_quality = signal_quality or {"usable": True, "reason": "not_measured"}
-    rawnet_task = (
+    rawnet_task = rawnet_task or (
         fetch_rawnet(base64_audio)
         if signal_quality.get("usable", True)
         else _immediate_float(0.0)
@@ -809,15 +849,7 @@ async def orchestrate_late_fusion(
 
     semantic_score = float(distilbert_data.get("semantic_score", 0.0))
     semantic_label = str(distilbert_data.get("label", "benign"))
-    real_score = max(0.0, 100.0 - synthetic_score)
-    if signal_quality.get("usable", True):
-        signal_score = (
-            f"{synthetic_score:.2f}% AI (Deepfake)"
-            if synthetic_score > 50.0
-            else f"{real_score:.2f}% Human"
-        )
-    else:
-        signal_score = "Need clearer speech"
+    signal_score = format_signal_score(synthetic_score, signal_quality)
     semantic_intent = f"{semantic_label.upper()} ({semantic_score:.2f})"
     fusion_status, is_threat = build_fusion_status(
         identity_result=identity_result,
@@ -882,7 +914,10 @@ def _semantic_waiting_result(text_context: str, context_seconds: float) -> dict:
         return {"semantic_score": 0.0, "label": "need_speech"}
     return {
         "semantic_score": 0.0,
-        "label": f"building_context_{context_seconds:.0f}s",
+        "label": (
+            f"collecting speech {context_seconds:.0f}/"
+            f"{SEMANTIC_MIN_CONTEXT_SECONDS:.1f}s"
+        ),
     }
 
 
@@ -1103,6 +1138,17 @@ async def consume_audio_track(track, caller_id: str, session_id: str):
                 sf.write(wav_io, chunk_audio, sample_rate, format="WAV", subtype="PCM_16")
                 wav_bytes = wav_io.getvalue()
                 base64_audio = base64.b64encode(wav_bytes).decode("utf-8")
+                rawnet_task: Awaitable[float] | None = None
+
+                if signal_quality["usable"]:
+                    rawnet_task = asyncio.create_task(fetch_rawnet(base64_audio))
+                    asyncio.create_task(
+                        publish_signal_when_ready(
+                            rawnet_task,
+                            session_id=session_id,
+                            signal_quality=signal_quality,
+                        )
+                    )
 
                 if signal_quality["usable"]:
                     transcription = await asyncio.to_thread(sync_transcribe_wav_bytes, wav_bytes)
@@ -1131,6 +1177,7 @@ async def consume_audio_track(track, caller_id: str, session_id: str):
                         session_id=session_id,
                         signal_quality=signal_quality,
                         semantic_context_seconds=semantic_context_seconds,
+                        rawnet_task=rawnet_task,
                     )
                 )
 

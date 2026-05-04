@@ -253,5 +253,8 @@ __pycache__/
 
 
 custom_scam_model/
+custom_scam_model.zip
+trust_call_backend/state/
+*.zip
 results/
 checkpoint-*/

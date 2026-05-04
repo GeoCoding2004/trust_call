@@ -1,7 +1,7 @@
 {
   "target_sample_rate_hz": 16000,
   "min_speech_seconds": 1.5,
-  "min_rms": 0.003,
+  "min_rms": 0.001,
   "match_threshold": 0.69,
   "review_threshold": 0.66,
   "ema_alpha": 0.2,

@@ -236,6 +236,14 @@ The mobile app already points to the deployed public VM EEP:
 http://35.189.221.158:8080
 ```
 
+Before running the app, verify the cloud backend from a browser:
+
+```text
+http://35.189.221.158:8080/docs
+```
+
+If this page does not open, the VM or Docker Compose stack is offline and the mobile app will not connect.
+
 ### Path A: React Native Dev Run
 
 Use this when actively debugging the app from a laptop.
@@ -319,8 +327,11 @@ adb install -r C:\Users\JL\Desktop\trust_call_full_pipeline\TrustCallApp\android
 2. Select or simulate a caller.
 3. Press `Accept`.
 4. Allow microphone permission.
-5. Speak for 10-20 seconds.
-6. The app should show Signal, Semantic, Identity, and Late Fusion telemetry.
+5. Hold the phone close to your mouth, around 10-20 cm away.
+6. Speak clearly for at least 15-25 seconds. Use continuous sentences, not single words.
+7. Avoid music, fan noise, other speakers, or covering the microphone.
+8. The app should show Signal, Semantic, Identity, and Late Fusion telemetry.
+9. End the call. If the caller has no saved voice profile, choose whether to save or discard the collected TOFU profile.
 
 If the app cannot connect, first verify the public backend opens:
 
@@ -335,7 +346,27 @@ cd ~/trust_call
 docker compose logs -f trust-call-backend
 ```
 
+For a successful demo, expect:
+
+- `Connection` becomes connected after pressing `Accept`.
+- `Voice Authenticity` updates after the first usable audio chunk.
+- `Conversation Risk` may need longer speech because it depends on transcription.
+- `Caller Identity` updates once enough clear speech is available for ECAPA.
+- Grafana panels update with service health, request volume, and identity/fusion metrics.
+
 Demo limitation: in this deployed demo, IEP3 runs in the hosted backend so testers do not need the ECAPA model locally. The intended production privacy direction is to move IEP3 embeddings/model execution to secure on-device storage.
+
+## Model Artifacts
+
+The large trained model artifacts are intentionally not committed directly when avoidable. For the deployed VM, the required files must exist on the server before Docker Compose is built:
+
+- `rawnet-service/fine_tuned_DF_model.pth`
+- `distilbert-service/custom_scam_model/config.json`
+- `distilbert-service/custom_scam_model/model.safetensors`
+- `distilbert-service/custom_scam_model/tokenizer.json`
+- `distilbert-service/custom_scam_model/tokenizer_config.json`
+
+If the VM is rebuilt from scratch, upload these artifacts first, then rebuild the affected Docker services.
 
 ## Running The Local Demo
 
@@ -418,4 +449,4 @@ The evaluator generates trial scores, summary metrics, and threshold recommendat
 - IEP3 profile vectors are stored in the backend local state directory for the demo.
 - Live IEP2 requires `faster-whisper` to be installed in the backend environment.
 - `start_services.ps1` may need path cleanup before it is reliable across machines.
-- Production deployment still needs real auth, encrypted profile storage, secret management, hosted service configuration, CI/CD, and monitoring hardening.
+- Production deployment still needs real auth, encrypted profile storage, secret management, hardened CI/CD approvals, and monitoring alerts.

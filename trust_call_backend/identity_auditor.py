@@ -53,6 +53,7 @@ IDENTITY_STATUS_CONTRACT = {
     "profile_incompatible": "The stored profile was created with a different embedder.",
     "model_unavailable": "The speaker verification model could not be loaded.",
     "candidate_collecting": "Temporary TOFU embeddings are being collected for this caller.",
+    "candidate_waiting_for_speech": "TOFU enrollment is waiting for enough clear speech.",
     "match": "The current speaker matches the enrolled profile.",
     "review": "The current speaker is borderline and should be corroborated.",
     "mismatch": "The current speaker does not match the enrolled profile.",

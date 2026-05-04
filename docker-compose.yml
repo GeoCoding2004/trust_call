@@ -38,7 +38,7 @@ services:
       TRUST_CALL_SIGNAL_MIN_RMS: "0.0025"
       TRUST_CALL_SIGNAL_MIN_PEAK: "0.02"
       TRUST_CALL_SIGNAL_MIN_ACTIVE_RATIO: "0.015"
-      TRUST_CALL_SEMANTIC_CONTEXT_SECONDS: "8.0"
+      TRUST_CALL_SEMANTIC_CONTEXT_SECONDS: "4.5"
       TRUST_CALL_WEBRTC_STUN_URL: stun:stun.l.google.com:19302
     depends_on:
       - rawnet-service
